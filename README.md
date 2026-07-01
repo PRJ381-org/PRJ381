@@ -43,8 +43,20 @@ Automatically updated every Monday from our ClickUp board.
 Reference images: **[Campus Reference Images](https://belgiumcampusacza.sharepoint.com/:f:/s/PRJ3812026-STE-BCOM-Group3/IgBQnndqW5BwQLvyJaraki-zAdYiY74ln2q9eea4nOrb1PQ?e=GDixEC)**
 
 <!-- PROGRESS-REPORT:START -->
-### Weekly Progress Report — pending first run
+### Weekly Progress Report — 02 Jul 2026
 
-_This section is generated automatically every Monday from ClickUp._
-_Trigger it now from the Actions tab → "Weekly Progress Report" → "Run workflow"._
+_Reporting window: 25 Jun – 02 Jul 2026 · generated automatically from ClickUp_
+
+| Metric | Count |
+|---|---|
+| Total tickets on board | 0 |
+| ✅ Done (all time) | 0 |
+| 🔄 In progress | 0 |
+| 📋 To do | 0 |
+| 🎉 Completed this week | 0 |
+| 🆕 Created this week | 0 |
+
+> No tickets on the ClickUp board yet. Once the team starts
+> logging tasks, this report will fill in automatically.
+
 <!-- PROGRESS-REPORT:END -->
