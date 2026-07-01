@@ -1,0 +1,47 @@
+name: Weekly Progress Report
+
+# Runs every Monday 06:00 UTC = 08:00 SAST.
+# Also runnable on demand from the Actions tab (workflow_dispatch).
+on:
+  schedule:
+    - cron: "0 6 * * 1"
+  workflow_dispatch:
+
+permissions:
+  contents: write   # needed so the action can commit the updated README/reports
+
+jobs:
+  progress-report:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: Generate progress report
+        env:
+          CLICKUP_API_TOKEN: ${{ secrets.CLICKUP_API_TOKEN }}
+          TEAMS_WEBHOOK_URL: ${{ secrets.TEAMS_WEBHOOK_URL }}
+          CLICKUP_TEAM_ID: "90152515539"
+          CLICKUP_SPACE_ID: "901510780768"
+          # CLICKUP_LIST_ID: ""   # uncomment to narrow the report to one list
+          REPO_SLUG: ${{ github.repository }}
+          DEFAULT_BRANCH: ${{ github.ref_name }}
+          WINDOW_DAYS: "7"
+        run: python scripts/generate_progress_report.py
+
+      - name: Commit and push report
+        run: |
+          git config user.name  "prj381-report-bot"
+          git config user.email "actions@github.com"
+          git add README.md reports/
+          if git diff --staged --quiet; then
+            echo "No changes to commit."
+          else
+            git commit -m "chore: weekly progress report ($(date +%Y-%m-%d))"
+            git push
+          fi

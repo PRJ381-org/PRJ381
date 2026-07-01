@@ -36,3 +36,15 @@ This project utilizes Extreme Programming (XP) and Trunk-Based Development.
 2. Open your git bash terminal and initialize LFS on your machine:
    ```bash
    git lfs install
+
+## 📊 Project Progress
+
+Automatically updated every Monday from our ClickUp board.
+Reference images: **[Campus Reference Images](https://belgiumcampusacza.sharepoint.com/:f:/s/PRJ3812026-STE-BCOM-Group3/IgBQnndqW5BwQLvyJaraki-zAdYiY74ln2q9eea4nOrb1PQ?e=GDixEC)**
+
+<!-- PROGRESS-REPORT:START -->
+### Weekly Progress Report — pending first run
+
+_This section is generated automatically every Monday from ClickUp._
+_Trigger it now from the Actions tab → "Weekly Progress Report" → "Run workflow"._
+<!-- PROGRESS-REPORT:END -->
