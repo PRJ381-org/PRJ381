@@ -43,20 +43,44 @@ Automatically updated every Monday from our ClickUp board.
 Reference images: **[Campus Reference Images](https://belgiumcampusacza.sharepoint.com/:f:/s/PRJ3812026-STE-BCOM-Group3/IgBQnndqW5BwQLvyJaraki-zAdYiY74ln2q9eea4nOrb1PQ?e=GDixEC)**
 
 <!-- PROGRESS-REPORT:START -->
-### Weekly Progress Report — 02 Jul 2026
+### Weekly Progress Report — 06 Jul 2026
 
-_Reporting window: 25 Jun – 02 Jul 2026 · generated automatically from ClickUp_
+_Reporting window: 29 Jun – 06 Jul 2026 · generated automatically from ClickUp_
 
 | Metric | Count |
 |---|---|
-| Total tickets on board | 0 |
-| ✅ Done (all time) | 0 |
-| 🔄 In progress | 0 |
-| 📋 To do | 0 |
-| 🎉 Completed this week | 0 |
-| 🆕 Created this week | 0 |
+| Total tickets on board | 35 |
+| ✅ Done (all time) | 3 |
+| 🔄 In progress | 3 |
+| 📋 To do | 29 |
+| 🎉 Completed this week | 3 |
+| 🆕 Created this week | 35 |
 
-> No tickets on the ClickUp board yet. Once the team starts
-> logging tasks, this report will fill in automatically.
+**🎉 Completed this week**
+
+- **Scan & develop campus assets** — unassigned · [open](https://app.clickup.com/t/86cajkmmt)
+- **Feasibility: 3D modelling environment (best fit)** — unassigned · [open](https://app.clickup.com/t/86cajkmkv)
+- **Feasibility: 3D scanning tools** — unassigned · [open](https://app.clickup.com/t/86cajkmkj)
+
+**🔄 In progress**
+
+- **Test assets for bugs & artifacts** — unassigned · [open](https://app.clickup.com/t/86cajkmq9)
+- **Build campus levels (all areas)** — unassigned · [open](https://app.clickup.com/t/86cajkmne)
+- **Integrate campus levels into explorable world** — unassigned · [open](https://app.clickup.com/t/86cajkmfm)
+
+**📅 Due in the next 7 days**
+
+_Nothing due in the coming week._
+
+**⚠️ Overdue**
+
+- **Test assets for bugs & artifacts** — unassigned · [open](https://app.clickup.com/t/86cajkmq9)
+- **Build campus levels (all areas)** — unassigned · [open](https://app.clickup.com/t/86cajkmne)
+- **Integrate campus levels into explorable world** — unassigned · [open](https://app.clickup.com/t/86cajkmfm)
+- **Develop data handler class** — unassigned · [open](https://app.clickup.com/t/86cajkmfd)
+- **Naming convention standards** — unassigned · [open](https://app.clickup.com/t/86cajkm9r)
+- **Program standards document** — unassigned · [open](https://app.clickup.com/t/86cajkm9e)
+- **Project planning document** — unassigned · [open](https://app.clickup.com/t/86cajkm99)
+- **Asset standards document** — unassigned · [open](https://app.clickup.com/t/86cajkm8p)
 
 <!-- PROGRESS-REPORT:END -->
