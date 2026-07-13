@@ -43,30 +43,30 @@ Automatically updated every Monday from our ClickUp board.
 Reference images: **[Campus Reference Images](https://belgiumcampusacza.sharepoint.com/:f:/s/PRJ3812026-STE-BCOM-Group3/IgBQnndqW5BwQLvyJaraki-zAdYiY74ln2q9eea4nOrb1PQ?e=GDixEC)**
 
 <!-- PROGRESS-REPORT:START -->
-### Weekly Progress Report — 06 Jul 2026
+### Weekly Progress Report — 13 Jul 2026
 
-_Reporting window: 29 Jun – 06 Jul 2026 · generated automatically from ClickUp_
+_Reporting window: 06 Jul – 13 Jul 2026 · generated automatically from ClickUp_
 
 | Metric | Count |
 |---|---|
 | Total tickets on board | 35 |
-| ✅ Done (all time) | 3 |
-| 🔄 In progress | 3 |
-| 📋 To do | 29 |
-| 🎉 Completed this week | 3 |
-| 🆕 Created this week | 35 |
+| ✅ Done (all time) | 4 |
+| 🔄 In progress | 5 |
+| 📋 To do | 26 |
+| 🎉 Completed this week | 1 |
+| 🆕 Created this week | 0 |
 
 **🎉 Completed this week**
 
-- **Scan & develop campus assets** — unassigned · [open](https://app.clickup.com/t/86cajkmmt)
-- **Feasibility: 3D modelling environment (best fit)** — unassigned · [open](https://app.clickup.com/t/86cajkmkv)
-- **Feasibility: 3D scanning tools** — unassigned · [open](https://app.clickup.com/t/86cajkmkj)
+- **Project planning document** — unassigned · [open](https://app.clickup.com/t/86cajkm99)
 
 **🔄 In progress**
 
 - **Test assets for bugs & artifacts** — unassigned · [open](https://app.clickup.com/t/86cajkmq9)
+- **Collect multimedia per area (photos/videos/text)** — unassigned · [open](https://app.clickup.com/t/86cajkmq2)
 - **Build campus levels (all areas)** — unassigned · [open](https://app.clickup.com/t/86cajkmne)
-- **Integrate campus levels into explorable world** — unassigned · [open](https://app.clickup.com/t/86cajkmfm)
+- **UI + open-day / campus selection screen** — Ethan Lindsay, Chris Fourie · [open](https://app.clickup.com/t/86cajkmgv)
+- **Integrate campus levels into explorable world** — Ethan Lindsay, Robert Van Der Merwe · [open](https://app.clickup.com/t/86cajkmfm)
 
 **📅 Due in the next 7 days**
 
@@ -76,11 +76,10 @@ _Nothing due in the coming week._
 
 - **Test assets for bugs & artifacts** — unassigned · [open](https://app.clickup.com/t/86cajkmq9)
 - **Build campus levels (all areas)** — unassigned · [open](https://app.clickup.com/t/86cajkmne)
-- **Integrate campus levels into explorable world** — unassigned · [open](https://app.clickup.com/t/86cajkmfm)
-- **Develop data handler class** — unassigned · [open](https://app.clickup.com/t/86cajkmfd)
-- **Naming convention standards** — unassigned · [open](https://app.clickup.com/t/86cajkm9r)
-- **Program standards document** — unassigned · [open](https://app.clickup.com/t/86cajkm9e)
-- **Project planning document** — unassigned · [open](https://app.clickup.com/t/86cajkm99)
-- **Asset standards document** — unassigned · [open](https://app.clickup.com/t/86cajkm8p)
+- **Integrate campus levels into explorable world** — Ethan Lindsay, Robert Van Der Merwe · [open](https://app.clickup.com/t/86cajkmfm)
+- **Develop data handler class** — Robert Van Der Merwe, Louis Schonborn, Fourie · [open](https://app.clickup.com/t/86cajkmfd)
+- **Naming convention standards** — Chris Fourie, Ethan Lindsay, liam dickson · [open](https://app.clickup.com/t/86cajkm9r)
+- **Program standards document** — Chris Fourie · [open](https://app.clickup.com/t/86cajkm9e)
+- **Asset standards document** — Ethan Lindsay · [open](https://app.clickup.com/t/86cajkm8p)
 
 <!-- PROGRESS-REPORT:END -->
