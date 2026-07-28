@@ -1,0 +1,48 @@
+### PRJ381 backend smoke tests
+# Easiest way to run these: install the VS Code extension "REST Client"
+# (humao.rest-client), then click the "Send Request" link above each block.
+# (Postman works too, or curl in Git Bash — see README.)
+
+@baseUrl = http://localhost:4000
+
+### 1. Health — should return status ok + db "connected"
+GET {{baseUrl}}/health
+
+### 2. Submit a lead (Request More Information) — expect 201 + an id
+POST {{baseUrl}}/api/leads
+Content-Type: application/json
+
+{
+  "email": "student@example.com",
+  "hotspotId": "reception",
+  "sessionId": "test-session-001"
+}
+
+### 3. Send an analytics event — expect 201 + an id
+POST {{baseUrl}}/api/analytics/events
+Content-Type: application/json
+
+{
+  "sessionId": "test-session-001",
+  "eventType": "hotspot_view",
+  "area": "TechnoLab",
+  "hotspotId": "technolab_pc",
+  "durationMs": 4200
+}
+
+### 4. Invalid email — should be rejected with 400
+POST {{baseUrl}}/api/leads
+Content-Type: application/json
+
+{
+  "email": "not-an-email"
+}
+
+### 5. Invalid eventType — should be rejected with 400
+POST {{baseUrl}}/api/analytics/events
+Content-Type: application/json
+
+{
+  "sessionId": "test-session-001",
+  "eventType": "bogus"
+}
