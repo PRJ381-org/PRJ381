@@ -51,6 +51,7 @@ private:
 	FString SessionId;
 	FString IdToken;
 	bool bReady = false;
+	bool bSessionStartSent = false;
 
 	void SignInAnonymously();
 	void FallbackToLocalId();

@@ -2,6 +2,7 @@
 
 #include "CampusIdentitySubsystem.h"
 #include "CampusSaveManager.h" // adjust to your layout, e.g. "Save/CampusSaveManager.h"
+#include "CampusBackendClient.h"
 
 #include "HttpModule.h"
 #include "Interfaces/IHttpRequest.h"
@@ -34,6 +35,14 @@ UCampusSaveManager* UCampusIdentitySubsystem::GetSave() const
 
 void UCampusIdentitySubsystem::BeginSession()
 {
+	// Idempotent: if we already resolved this session (e.g. a new level called
+	// this again), just re-broadcast the id — don't re-resolve or re-send.
+	if (bReady)
+	{
+		OnSessionReady.Broadcast(SessionId);
+		return;
+	}
+
 	// 1) Reuse a persisted id if present (returning visitor on this device).
 	if (const UCampusSaveManager* Save = GetSave())
 	{
@@ -127,4 +136,17 @@ void UCampusIdentitySubsystem::FinishWith(const FString& InSessionId,
 	}
 
 	OnSessionReady.Broadcast(SessionId);
+
+	// Fire session_start exactly once per session (not per level load).
+	if (!bSessionStartSent)
+	{
+		bSessionStartSent = true;
+		if (const UGameInstance* GI = GetGameInstance())
+		{
+			if (UCampusBackendClient* Backend = GI->GetSubsystem<UCampusBackendClient>())
+			{
+				Backend->SendEvent(SessionId, TEXT("session_start"), TEXT(""), TEXT(""), 0);
+			}
+		}
+	}
 }
