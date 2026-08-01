@@ -18,6 +18,7 @@ const analyticsEventSchema = new mongoose.Schema(
     area: { type: String, trim: true },
     hotspotId: { type: String, trim: true },
     durationMs: { type: Number, min: 0 },
+    seq: { type: Number, index: true }, // client fire-order, for deterministic sorting
     metadata: { type: mongoose.Schema.Types.Mixed },
   },
   { timestamps: true }

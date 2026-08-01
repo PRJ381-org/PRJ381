@@ -25,6 +25,7 @@ router.post(
     body('area').optional().isString().trim(),
     body('hotspotId').optional().isString().trim(),
     body('durationMs').optional().isInt({ min: 0 }),
+    body('seq').optional().isInt({ min: 0 }),
     body('metadata').optional().isObject(),
   ],
   validate,
