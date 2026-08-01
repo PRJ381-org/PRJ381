@@ -56,5 +56,9 @@ public:
 private:
 	FString BaseUrl = TEXT("http://localhost:4000");
 
+	// Monotonic per-session counter so events can be ordered deterministically
+	// even when two land in the same millisecond (e.g. area_exit + area_enter).
+	int32 EventSeq = 0;
+
 	void PostJson(const FString& Endpoint, const FString& JsonBody, FOnBackendResult* ResultDelegate);
 };

@@ -60,6 +60,7 @@ void UCampusBackendClient::SendEvent(const FString& SessionId, const FString& Ev
 	if (!Area.IsEmpty())     Obj->SetStringField(TEXT("area"), Area);
 	if (!HotspotId.IsEmpty())Obj->SetStringField(TEXT("hotspotId"), HotspotId);
 	if (DurationMs > 0)      Obj->SetNumberField(TEXT("durationMs"), DurationMs);
+	Obj->SetNumberField(TEXT("seq"), ++EventSeq); // fire-order for deterministic sorting
 
 	PostJson(TEXT("/api/analytics/events"), SerializeJson(Obj), &OnEventResult);
 }
