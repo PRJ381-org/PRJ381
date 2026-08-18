@@ -1,10 +1,10 @@
-# Store all project content in Git LFS (your existing setup)
+# Store all project content in Git LFS (objects live in Cloudflare R2)
 Content/** filter=lfs diff=lfs merge=lfs -text
 
-# Unreal binaries: LFS storage + LOCKABLE.
-# 'lockable' makes these read-only until you claim them with `git lfs lock`,
-# which is what stops two people overwriting the same Blueprint/level.
-# (These also fix your previous lines, which were missing the leading '*'
-#  and therefore matched nothing.)
-*.uasset filter=lfs diff=lfs merge=lfs -text lockable
-*.umap   filter=lfs diff=lfs merge=lfs -text lockable
+# Unreal binaries in LFS.
+# NOTE: 'lockable' was removed. The Cloudflare R2 proxy backend does not
+# implement the Git LFS locking API, so `git lfs lock/unlock` cannot work,
+# and 'lockable' just leaves these files stuck read-only (Unreal can't save).
+# We coordinate binary edits via level-per-area ownership + WhatsApp instead.
+*.uasset filter=lfs diff=lfs merge=lfs -text
+*.umap   filter=lfs diff=lfs merge=lfs -text
