@@ -3,7 +3,7 @@ const { body } = require('express-validator');
 const rateLimit = require('express-rate-limit');
 const validate = require('../utils/validate');
 const AnalyticsEvent = require('../models/AnalyticsEvent');
-const { createEvent } = require('../controllers/analytics.controller');
+const { createEvent, listEvents, getSummary } = require('../controllers/analytics.controller');
 
 const router = express.Router();
 
@@ -31,5 +31,11 @@ router.post(
   validate,
   createEvent
 );
+
+// GET /api/analytics/events -> raw events (Power BI / dashboard)
+router.get('/events', listEvents);
+
+// GET /api/analytics/summary -> aggregate counts (dashboard)
+router.get('/summary', getSummary);
 
 module.exports = router;

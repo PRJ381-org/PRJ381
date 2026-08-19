@@ -1,7 +1,7 @@
 const express = require('express');
 const { body } = require('express-validator');
 const validate = require('../utils/validate');
-const { createLead } = require('../controllers/leads.controller');
+const { createLead, listLeads } = require('../controllers/leads.controller');
 
 const router = express.Router();
 
@@ -16,5 +16,8 @@ router.post(
   validate,
   createLead
 );
+
+// GET /api/leads -> list leads (Power BI / dashboard)
+router.get('/', listLeads);
 
 module.exports = router;
