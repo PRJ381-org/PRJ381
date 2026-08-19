@@ -1,25 +1,28 @@
-// Placeholder data for now — swap for real fetch() calls to the backend
-// (see backend/src/routes) once the API is ready to serve dashboard reads.
-const sampleStats = {
-  leads: 12,
-  events: 348,
-  sessions: 27,
-};
+// Points at the backend running locally. Once it's hosted (e.g. on Azure),
+// change this to that server's URL.
+const API_BASE_URL = "http://localhost:4000";
 
-const sampleLeads = [
-  { email: "prospective.student@example.com", hotspotId: "library", createdAt: "2026-08-18T10:15:00Z" },
-  { email: "another.student@example.com", hotspotId: "sports-field", createdAt: "2026-08-17T14:42:00Z" },
-];
+async function fetchJson(path) {
+  const res = await fetch(`${API_BASE_URL}${path}`);
+  if (!res.ok) throw new Error(`${path} returned ${res.status}`);
+  return res.json();
+}
 
-function renderStats(stats) {
-  document.getElementById("stat-leads").textContent = stats.leads;
-  document.getElementById("stat-events").textContent = stats.events;
-  document.getElementById("stat-sessions").textContent = stats.sessions;
+function renderStats({ leads, events, sessions }) {
+  document.getElementById("stat-leads").textContent = leads;
+  document.getElementById("stat-events").textContent = events;
+  document.getElementById("stat-sessions").textContent = sessions;
 }
 
 function renderLeads(leads) {
   const tbody = document.querySelector("#leads-table tbody");
   tbody.innerHTML = "";
+
+  if (leads.length === 0) {
+    tbody.innerHTML = `<tr><td colspan="3">No leads yet.</td></tr>`;
+    return;
+  }
+
   for (const lead of leads) {
     const row = document.createElement("tr");
     row.innerHTML = `
@@ -31,5 +34,32 @@ function renderLeads(leads) {
   }
 }
 
-renderStats(sampleStats);
-renderLeads(sampleLeads);
+function showError(message) {
+  const main = document.querySelector(".content");
+  const banner = document.createElement("div");
+  banner.className = "error-banner";
+  banner.textContent = message;
+  main.prepend(banner);
+}
+
+async function loadDashboard() {
+  try {
+    const [summary, leadsRes] = await Promise.all([
+      fetchJson("/api/analytics/summary"),
+      fetchJson("/api/leads"),
+    ]);
+
+    renderStats({
+      leads: leadsRes.count,
+      events: summary.totalEvents,
+      sessions: summary.uniqueSessions,
+    });
+    renderLeads(leadsRes.leads);
+  } catch (err) {
+    showError(
+      `Could not load data from the backend (${err.message}). Is it running at ${API_BASE_URL}?`
+    );
+  }
+}
+
+loadDashboard();

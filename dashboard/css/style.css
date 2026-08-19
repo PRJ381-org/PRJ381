@@ -69,6 +69,16 @@ body {
   padding: 1rem 1.25rem;
 }
 
+.error-banner {
+  background: #3a1f1f;
+  border: 1px solid #7a3a3a;
+  color: #f0b4b4;
+  border-radius: 8px;
+  padding: 0.75rem 1rem;
+  margin-bottom: 1.5rem;
+  font-size: 0.9rem;
+}
+
 .panel h2 {
   margin-top: 0;
   font-size: 1rem;
