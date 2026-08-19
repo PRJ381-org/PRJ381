@@ -1,6 +1,5 @@
 # Store all project content in Git LFS (objects live in Cloudflare R2)
 Content/** filter=lfs diff=lfs merge=lfs -text
-
 # Unreal binaries in LFS.
 # NOTE: 'lockable' was removed. The Cloudflare R2 proxy backend does not
 # implement the Git LFS locking API, so `git lfs lock/unlock` cannot work,
@@ -8,3 +7,4 @@ Content/** filter=lfs diff=lfs merge=lfs -text
 # We coordinate binary edits via level-per-area ownership + WhatsApp instead.
 *.uasset filter=lfs diff=lfs merge=lfs -text
 *.umap   filter=lfs diff=lfs merge=lfs -text
+Content/Levels/Stellenbosch/LVL_OuterCampus.umap filter=lfs diff=lfs merge=lfs -text
