@@ -8,3 +8,28 @@ exports.createEvent = asyncHandler(async (req, res) => {
   });
   res.status(201).json({ success: true, id: event._id });
 });
+
+// GET /api/analytics/events -> raw events, for Power BI / dashboard consumption
+exports.listEvents = asyncHandler(async (req, res) => {
+  const limit = Math.min(parseInt(req.query.limit, 10) || 500, 5000);
+  const events = await AnalyticsEvent.find().sort({ createdAt: -1 }).limit(limit);
+  res.json({ success: true, count: events.length, events });
+});
+
+// GET /api/analytics/summary -> aggregate counts for the dashboard
+exports.getSummary = asyncHandler(async (req, res) => {
+  const [byType, totalEvents, sessionIds] = await Promise.all([
+    AnalyticsEvent.aggregate([{ $group: { _id: '$eventType', count: { $sum: 1 } } }]),
+    AnalyticsEvent.countDocuments(),
+    AnalyticsEvent.distinct('sessionId'),
+  ]);
+
+  const eventsByType = Object.fromEntries(byType.map((e) => [e._id, e.count]));
+
+  res.json({
+    success: true,
+    totalEvents,
+    uniqueSessions: sessionIds.length,
+    eventsByType,
+  });
+});
