@@ -5,7 +5,7 @@
  */
 import { fetchJson, API_BASE_URL } from './api.js';
 import { isAuthenticated, isAdmin, getCurrentUser } from './auth.js';
-import { renderAreaChart, renderHotspotChart, renderTimelineChart } from './charts.js';
+import { renderEventTypeChart, renderAreaChart, renderHotspotChart, renderTimelineChart } from './charts.js';
 import { downloadLeadsCsv, downloadAnalyticsCsv } from './export.js';
 
 function renderStats({ leads, events, sessions }) {
@@ -62,6 +62,7 @@ async function loadDashboard() {
       events: summary.totalEvents,
       sessions: summary.uniqueSessions,
     });
+    renderEventTypeChart('events-chart', summary.eventsByType);
     renderLeads(leadsRes.leads);
   } catch (err) {
     showError(

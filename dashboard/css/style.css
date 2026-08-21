@@ -103,3 +103,14 @@ th {
   color: var(--muted);
   font-weight: 500;
 }
+
+.chart-panel {
+  margin-bottom: 2rem;
+}
+
+.chart-container {
+  position: relative;
+  height: 280px;
+  max-width: 500px;
+  margin: 0 auto;
+}
