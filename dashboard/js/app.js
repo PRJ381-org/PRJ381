@@ -1,33 +1,39 @@
-// Points at the backend running locally. Once it's hosted (e.g. on Azure),
-// change this to that server's URL.
-const API_BASE_URL = "http://localhost:4000";
-
-async function fetchJson(path) {
-  const res = await fetch(`${API_BASE_URL}${path}`);
-  if (!res.ok) throw new Error(`${path} returned ${res.status}`);
-  return res.json();
-}
+/**
+ * Main Dashboard Application Entry Point.
+ *
+ * Coordinates authentication state, analytics data loading, chart rendering, and exports.
+ */
+import { fetchJson, API_BASE_URL } from './api.js';
+import { isAuthenticated, isAdmin, getCurrentUser } from './auth.js';
+import { renderAreaChart, renderHotspotChart, renderTimelineChart } from './charts.js';
+import { downloadLeadsCsv, downloadAnalyticsCsv } from './export.js';
 
 function renderStats({ leads, events, sessions }) {
-  document.getElementById("stat-leads").textContent = leads;
-  document.getElementById("stat-events").textContent = events;
-  document.getElementById("stat-sessions").textContent = sessions;
+  const statLeads = document.getElementById('stat-leads');
+  const statEvents = document.getElementById('stat-events');
+  const statSessions = document.getElementById('stat-sessions');
+
+  if (statLeads) statLeads.textContent = leads;
+  if (statEvents) statEvents.textContent = events;
+  if (statSessions) statSessions.textContent = sessions;
 }
 
 function renderLeads(leads) {
-  const tbody = document.querySelector("#leads-table tbody");
-  tbody.innerHTML = "";
+  const tbody = document.querySelector('#leads-table tbody');
+  if (!tbody) return;
 
-  if (leads.length === 0) {
+  tbody.innerHTML = '';
+
+  if (!leads || leads.length === 0) {
     tbody.innerHTML = `<tr><td colspan="3">No leads yet.</td></tr>`;
     return;
   }
 
   for (const lead of leads) {
-    const row = document.createElement("tr");
+    const row = document.createElement('tr');
     row.innerHTML = `
       <td>${lead.email}</td>
-      <td>${lead.hotspotId || "—"}</td>
+      <td>${lead.hotspotId || '—'}</td>
       <td>${new Date(lead.createdAt).toLocaleString()}</td>
     `;
     tbody.appendChild(row);
@@ -35,9 +41,11 @@ function renderLeads(leads) {
 }
 
 function showError(message) {
-  const main = document.querySelector(".content");
-  const banner = document.createElement("div");
-  banner.className = "error-banner";
+  const main = document.querySelector('.content');
+  if (!main) return;
+
+  const banner = document.createElement('div');
+  banner.className = 'error-banner';
   banner.textContent = message;
   main.prepend(banner);
 }
@@ -45,8 +53,8 @@ function showError(message) {
 async function loadDashboard() {
   try {
     const [summary, leadsRes] = await Promise.all([
-      fetchJson("/api/analytics/summary"),
-      fetchJson("/api/leads"),
+      fetchJson('/api/analytics/summary'),
+      fetchJson('/api/leads'),
     ]);
 
     renderStats({
@@ -62,4 +70,5 @@ async function loadDashboard() {
   }
 }
 
+// Initial bootstrap
 loadDashboard();
