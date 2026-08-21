@@ -63,6 +63,8 @@ async function loadDashboard() {
       sessions: summary.uniqueSessions,
     });
     renderEventTypeChart('events-chart', summary.eventsByType);
+    renderAreaChart('area-chart', summary.areas);
+    renderHotspotChart('hotspot-chart', summary.hotspots);
     renderLeads(leadsRes.leads);
   } catch (err) {
     showError(

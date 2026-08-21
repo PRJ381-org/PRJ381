@@ -18,18 +18,36 @@ exports.listEvents = asyncHandler(async (req, res) => {
 
 // GET /api/analytics/summary -> aggregate counts for the dashboard
 exports.getSummary = asyncHandler(async (req, res) => {
-  const [byType, totalEvents, sessionIds] = await Promise.all([
+  const [byType, totalEvents, sessionIds, byArea, topHotspots] = await Promise.all([
     AnalyticsEvent.aggregate([{ $group: { _id: '$eventType', count: { $sum: 1 } } }]),
     AnalyticsEvent.countDocuments(),
     AnalyticsEvent.distinct('sessionId'),
+    AnalyticsEvent.aggregate([
+      { $match: { area: { $exists: true, $ne: null, $ne: '' } } },
+      { $group: { _id: '$area', totalDurationMs: { $sum: '$durationMs' }, count: { $sum: 1 } } },
+      { $sort: { count: -1 } },
+      { $limit: 8 },
+    ]),
+    AnalyticsEvent.aggregate([
+      { $match: { hotspotId: { $exists: true, $ne: null, $ne: '' } } },
+      { $group: { _id: '$hotspotId', count: { $sum: 1 } } },
+      { $sort: { count: -1 } },
+      { $limit: 8 },
+    ]),
   ]);
 
   const eventsByType = Object.fromEntries(byType.map((e) => [e._id, e.count]));
+  const areas = Object.fromEntries(
+    byArea.map((a) => [a._id, Math.round((a.totalDurationMs || 0) / 1000) || a.count])
+  );
+  const hotspots = Object.fromEntries(topHotspots.map((h) => [h._id, h.count]));
 
   res.json({
     success: true,
     totalEvents,
     uniqueSessions: sessionIds.length,
     eventsByType,
+    areas,
+    hotspots,
   });
 });
