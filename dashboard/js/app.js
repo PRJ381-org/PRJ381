@@ -8,6 +8,20 @@ import { isAuthenticated, isAdmin, getCurrentUser } from './auth.js';
 import { renderEventTypeChart, renderAreaChart, renderHotspotChart, renderTimelineChart } from './charts.js';
 import { downloadLeadsCsv, downloadAnalyticsCsv } from './export.js';
 
+function setConnectionStatus(isOnline) {
+  const dot = document.querySelector('.status-dot');
+  const text = document.getElementById('connection-status');
+  if (!dot || !text) return;
+
+  if (isOnline) {
+    dot.classList.remove('offline');
+    text.textContent = 'Live';
+  } else {
+    dot.classList.add('offline');
+    text.textContent = 'Offline';
+  }
+}
+
 function renderStats({ leads, events, sessions }) {
   const statLeads = document.getElementById('stat-leads');
   const statEvents = document.getElementById('stat-events');
@@ -44,6 +58,9 @@ function showError(message) {
   const main = document.querySelector('.content');
   if (!main) return;
 
+  const existing = document.querySelector('.error-banner');
+  if (existing) existing.remove();
+
   const banner = document.createElement('div');
   banner.className = 'error-banner';
   banner.textContent = message;
@@ -51,12 +68,16 @@ function showError(message) {
 }
 
 async function loadDashboard() {
+  const existingError = document.querySelector('.error-banner');
+  if (existingError) existingError.remove();
+
   try {
     const [summary, leadsRes] = await Promise.all([
       fetchJson('/api/analytics/summary'),
       fetchJson('/api/leads'),
     ]);
 
+    setConnectionStatus(true);
     renderStats({
       leads: leadsRes.count,
       events: summary.totalEvents,
@@ -67,10 +88,22 @@ async function loadDashboard() {
     renderHotspotChart('hotspot-chart', summary.hotspots);
     renderLeads(leadsRes.leads);
   } catch (err) {
+    setConnectionStatus(false);
     showError(
-      `Could not load data from the backend (${err.message}). Is it running at ${API_BASE_URL}?`
+      `Could not load data from backend (${err.message}). Is it running at ${API_BASE_URL}?`
     );
   }
+}
+
+// Wire up Refresh Button
+const btnRefresh = document.getElementById('btn-refresh');
+if (btnRefresh) {
+  btnRefresh.addEventListener('click', () => {
+    btnRefresh.style.opacity = '0.6';
+    loadDashboard().finally(() => {
+      setTimeout(() => (btnRefresh.style.opacity = '1'), 300);
+    });
+  });
 }
 
 // Initial bootstrap

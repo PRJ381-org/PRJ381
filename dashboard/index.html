@@ -8,7 +8,25 @@
 </head>
 <body>
   <header class="topbar">
-    <h1>VR Campus Tour — Dashboard</h1>
+    <div class="brand">
+      <img src="assets/logo.png" alt="Belgium Campus" class="brand-logo" />
+      <div class="brand-info">
+        <h1>Virtual Campus Open Day</h1>
+        <span class="brand-subtitle">VR Analytics & Telemetry</span>
+      </div>
+    </div>
+    <div class="header-actions">
+      <div class="status-indicator">
+        <span class="status-dot"></span>
+        <span class="status-text" id="connection-status">Live</span>
+      </div>
+      <button id="btn-refresh" class="btn-refresh" title="Refresh data">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <path d="M23 4v6h-6M1 20v-6h6M3.51 9a9 9 0 0 1 14.85-3.36L23 10M1 14l4.64 4.36A9 9 0 0 0 20.49 15"></path>
+        </svg>
+        <span>Refresh</span>
+      </button>
+    </div>
   </header>
 
   <main class="content">

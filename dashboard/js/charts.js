@@ -1,7 +1,7 @@
 /**
  * Charts and Visualizations Module.
  *
- * Provides Chart.js wrappers for dashboard analytics.
+ * Provides Chart.js wrappers for dashboard analytics styled with Belgium Campus branding.
  */
 
 let eventTypeChartInstance = null;
@@ -9,8 +9,8 @@ let areaChartInstance = null;
 let hotspotChartInstance = null;
 
 const darkGridOptions = {
-  grid: { color: '#2a2e38' },
-  ticks: { color: '#9aa0aa', font: { size: 11 } },
+  grid: { color: '#232936' },
+  ticks: { color: '#8e95a2', font: { size: 11 } },
 };
 
 /**
@@ -28,13 +28,14 @@ export function renderEventTypeChart(canvasId, eventsByType = {}) {
     data.push(1);
   }
 
+  // Belgium Campus Brand Theme Colors
   const backgroundColors = [
-    '#4f8cff', // blue
-    '#38d39f', // mint green
-    '#f5a623', // amber
-    '#e056fd', // purple
-    '#ff6b6b', // coral
-    '#48dbfb', // cyan
+    '#e0292b', // Belgium Campus Red
+    '#f5a623', // Belgium Campus Gold / Yellow
+    '#2ecc71', // Mint Green
+    '#3b82f6', // Slate Blue
+    '#9b59b6', // Amethyst Purple
+    '#e67e22', // Deep Orange
   ];
 
   if (eventTypeChartInstance) {
@@ -49,7 +50,7 @@ export function renderEventTypeChart(canvasId, eventsByType = {}) {
         {
           data: data,
           backgroundColor: backgroundColors.slice(0, labels.length),
-          borderColor: '#171a21',
+          borderColor: '#13171f',
           borderWidth: 2,
         },
       ],
@@ -61,7 +62,7 @@ export function renderEventTypeChart(canvasId, eventsByType = {}) {
         legend: {
           position: 'bottom',
           labels: {
-            color: '#9aa0aa',
+            color: '#8e95a2',
             font: { size: 11 },
             padding: 12,
           },
@@ -98,7 +99,7 @@ export function renderAreaChart(canvasId, areaData = {}) {
         {
           label: 'Activity (sec / events)',
           data: data,
-          backgroundColor: '#38d39f',
+          backgroundColor: '#e0292b', // Brand Red
           borderRadius: 4,
         },
       ],
@@ -144,7 +145,7 @@ export function renderHotspotChart(canvasId, hotspotData = {}) {
         {
           label: 'Views',
           data: data,
-          backgroundColor: '#f5a623',
+          backgroundColor: '#f5a623', // Brand Gold / Yellow
           borderRadius: 4,
         },
       ],
