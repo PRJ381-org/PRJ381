@@ -282,6 +282,34 @@ tbody tr:hover {
   background: rgba(255, 255, 255, 0.02);
 }
 
+/* Users Panel & Role Badges */
+.users-panel {
+  margin-top: 1.5rem;
+}
+
+.role-badge {
+  display: inline-flex;
+  align-items: center;
+  padding: 0.2rem 0.55rem;
+  border-radius: 12px;
+  font-size: 0.72rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+}
+
+.role-admin {
+  background: rgba(245, 166, 35, 0.15);
+  color: var(--brand-yellow);
+  border: 1px solid rgba(245, 166, 35, 0.35);
+}
+
+.role-viewer {
+  background: rgba(79, 140, 255, 0.12);
+  color: #4f8cff;
+  border: 1px solid rgba(79, 140, 255, 0.3);
+}
+
 /* Error Banner */
 .error-banner {
   background: #331517;

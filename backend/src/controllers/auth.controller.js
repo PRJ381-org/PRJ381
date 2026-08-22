@@ -16,7 +16,7 @@ exports.login = asyncHandler(async (req, res) => {
     message: 'Auth login endpoint scaffold ready',
     token: 'placeholder-jwt-token',
     user: {
-      email: email || 'user@campus.ac.za',
+      email: email || 'admin@belgiumcampus.ac.za',
       role: 'admin',
     },
   });
@@ -30,6 +30,19 @@ exports.me = asyncHandler(async (req, res) => {
   // TODO: Return authenticated user info from req.user
   res.json({
     success: true,
-    user: req.user || { email: 'viewer@campus.ac.za', role: 'viewer' },
+    user: req.user || { email: 'viewer@belgiumcampus.ac.za', role: 'viewer' },
+  });
+});
+
+/**
+ * GET /api/auth/users
+ * Returns list of registered dashboard users from MongoDB (excluding password hashes).
+ */
+exports.listUsers = asyncHandler(async (req, res) => {
+  const users = await User.find({}, '-password').sort({ createdAt: -1 });
+  res.json({
+    success: true,
+    count: users.length,
+    users,
   });
 });

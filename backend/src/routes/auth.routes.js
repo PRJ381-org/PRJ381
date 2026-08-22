@@ -20,4 +20,7 @@ router.post(
 // GET /api/auth/me
 router.get('/me', requireAuth, me);
 
+// GET /api/auth/users -> list registered users and roles
+router.get('/users', listUsers);
+
 module.exports = router;

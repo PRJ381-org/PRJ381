@@ -60,6 +60,30 @@ function renderLeads(leads) {
   }
 }
 
+function renderUsers(users) {
+  const tbody = document.querySelector('#users-table tbody');
+  if (!tbody) return;
+
+  tbody.innerHTML = '';
+
+  if (!users || users.length === 0) {
+    tbody.innerHTML = `<tr><td colspan="4">No registered users found.</td></tr>`;
+    return;
+  }
+
+  for (const user of users) {
+    const row = document.createElement('tr');
+    const roleBadgeClass = user.role === 'admin' ? 'role-admin' : 'role-viewer';
+    row.innerHTML = `
+      <td><strong>${user.name || 'Campus Member'}</strong></td>
+      <td>${user.email}</td>
+      <td><span class="role-badge ${roleBadgeClass}">${user.role || 'viewer'}</span></td>
+      <td>${new Date(user.createdAt).toLocaleDateString()}</td>
+    `;
+    tbody.appendChild(row);
+  }
+}
+
 function showError(message) {
   const main = document.querySelector('.content');
   if (!main) return;
@@ -78,9 +102,10 @@ async function loadDashboard() {
   if (existingError) existingError.remove();
 
   try {
-    const [summary, leadsRes] = await Promise.all([
+    const [summary, leadsRes, usersRes] = await Promise.all([
       fetchJson('/api/analytics/summary'),
       fetchJson('/api/leads'),
+      fetchJson('/api/auth/users').catch(() => ({ users: [] })),
     ]);
 
     setConnectionStatus(true);
@@ -93,6 +118,7 @@ async function loadDashboard() {
     renderAreaChart('area-chart', summary.areas);
     renderHotspotChart('hotspot-chart', summary.hotspots);
     renderLeads(leadsRes.leads);
+    renderUsers(usersRes.users);
   } catch (err) {
     setConnectionStatus(false);
     showError(
