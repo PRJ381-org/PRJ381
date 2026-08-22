@@ -22,14 +22,20 @@ function setConnectionStatus(isOnline) {
   }
 }
 
-function renderStats({ leads, events, sessions }) {
+function renderStats({ leads = 0, events = 0, sessions = 0 }) {
   const statLeads = document.getElementById('stat-leads');
   const statEvents = document.getElementById('stat-events');
   const statSessions = document.getElementById('stat-sessions');
+  const statConversion = document.getElementById('stat-conversion');
 
-  if (statLeads) statLeads.textContent = leads;
-  if (statEvents) statEvents.textContent = events;
-  if (statSessions) statSessions.textContent = sessions;
+  if (statLeads) statLeads.textContent = Number(leads).toLocaleString();
+  if (statEvents) statEvents.textContent = Number(events).toLocaleString();
+  if (statSessions) statSessions.textContent = Number(sessions).toLocaleString();
+
+  if (statConversion) {
+    const conversionRate = sessions > 0 ? ((leads / sessions) * 100).toFixed(1) : '0.0';
+    statConversion.textContent = `${conversionRate}%`;
+  }
 }
 
 function renderLeads(leads) {
