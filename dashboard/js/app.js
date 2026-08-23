@@ -4,9 +4,12 @@
  * Coordinates authentication state, analytics data loading, chart rendering, and table interactions.
  */
 import { fetchJson, API_BASE_URL } from './api.js';
-import { isAuthenticated, isAdmin, getCurrentUser } from './auth.js';
+import { requireLogin, restoreSession, isAdmin, getCurrentUser, logout } from './auth.js';
 import { renderEventTypeChart, renderAreaChart, renderHotspotChart, renderTimelineChart } from './charts.js';
 import { downloadLeadsCsv, downloadAnalyticsCsv } from './export.js';
+
+// Bail out to the login page immediately if there's no session at all.
+requireLogin();
 
 // State caches
 let allLeads = [];
@@ -231,6 +234,24 @@ if (btnRefresh) {
   });
 }
 
+// Wire up Logout button
+const btnLogout = document.getElementById('btn-logout');
+if (btnLogout) {
+  btnLogout.addEventListener('click', logout);
+}
+
 // Initialize
-setupQuickActionListeners();
-loadDashboard();
+async function init() {
+  const user = await restoreSession();
+  if (!user) return; // restoreSession already redirected to login on failure
+
+  const usersPanel = document.querySelector('.users-panel');
+  if (usersPanel) {
+    usersPanel.style.display = isAdmin() ? '' : 'none';
+  }
+
+  setupQuickActionListeners();
+  loadDashboard();
+}
+
+init();

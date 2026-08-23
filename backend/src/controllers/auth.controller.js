@@ -1,5 +1,8 @@
+const bcrypt = require('bcryptjs');
 const asyncHandler = require('../utils/asyncHandler');
 const User = require('../models/User');
+const { signSessionToken } = require('../utils/jwt');
+const { verifyMicrosoftIdToken } = require('../utils/microsoftAuth');
 
 /**
  * POST /api/auth/login
@@ -8,17 +11,62 @@ const User = require('../models/User');
 exports.login = asyncHandler(async (req, res) => {
   const { email, password } = req.body;
 
-  // TODO: Validate credentials against User model using bcrypt
-  // TODO: Generate JWT containing { id, email, role }
+  const user = await User.findOne({ email, provider: 'local' }).select('+password');
+  if (!user || !user.password) {
+    return res.status(401).json({ success: false, message: 'Invalid email or password' });
+  }
 
+  const passwordMatches = await bcrypt.compare(password, user.password);
+  if (!passwordMatches) {
+    return res.status(401).json({ success: false, message: 'Invalid email or password' });
+  }
+
+  const token = signSessionToken(user);
   res.json({
     success: true,
-    message: 'Auth login endpoint scaffold ready',
-    token: 'placeholder-jwt-token',
-    user: {
-      email: email || 'admin@belgiumcampus.ac.za',
-      role: 'admin',
-    },
+    token,
+    user: { email: user.email, name: user.name, role: user.role },
+  });
+});
+
+/**
+ * POST /api/auth/microsoft
+ * Exchanges a verified Microsoft Entra ID token for a session JWT.
+ * Auto-provisions a User record (role: viewer) on first sign-in.
+ */
+exports.microsoftLogin = asyncHandler(async (req, res) => {
+  const { idToken } = req.body;
+  if (!idToken) {
+    return res.status(400).json({ success: false, message: 'idToken is required' });
+  }
+
+  let decoded;
+  try {
+    decoded = await verifyMicrosoftIdToken(idToken);
+  } catch (err) {
+    return res.status(401).json({ success: false, message: `Microsoft sign-in failed: ${err.message}` });
+  }
+
+  const email = (decoded.preferred_username || decoded.email || '').toLowerCase();
+  if (!email) {
+    return res.status(401).json({ success: false, message: 'Microsoft account has no email claim' });
+  }
+
+  let user = await User.findOne({ email });
+  if (!user) {
+    user = await User.create({
+      email,
+      name: decoded.name || '',
+      provider: 'microsoft',
+      role: 'viewer',
+    });
+  }
+
+  const token = signSessionToken(user);
+  res.json({
+    success: true,
+    token,
+    user: { email: user.email, name: user.name, role: user.role },
   });
 });
 
@@ -27,11 +75,7 @@ exports.login = asyncHandler(async (req, res) => {
  * Returns information for currently authenticated user.
  */
 exports.me = asyncHandler(async (req, res) => {
-  // TODO: Return authenticated user info from req.user
-  res.json({
-    success: true,
-    user: req.user || { email: 'viewer@belgiumcampus.ac.za', role: 'viewer' },
-  });
+  res.json({ success: true, user: req.user });
 });
 
 /**

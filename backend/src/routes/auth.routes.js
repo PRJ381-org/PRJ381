@@ -1,8 +1,8 @@
 const express = require('express');
 const { body } = require('express-validator');
 const validate = require('../utils/validate');
-const { login, me, listUsers } = require('../controllers/auth.controller');
-const { requireAuth } = require('../middlewares/auth.middleware');
+const { login, microsoftLogin, me, listUsers } = require('../controllers/auth.controller');
+const { requireAuth, requireRole } = require('../middlewares/auth.middleware');
 
 const router = express.Router();
 
@@ -17,10 +17,13 @@ router.post(
   login
 );
 
+// POST /api/auth/microsoft -> exchange a Microsoft Entra ID token for a session JWT
+router.post('/microsoft', [body('idToken').notEmpty().withMessage('idToken is required')], validate, microsoftLogin);
+
 // GET /api/auth/me
 router.get('/me', requireAuth, me);
 
-// GET /api/auth/users -> list registered users and roles
-router.get('/users', listUsers);
+// GET /api/auth/users -> list registered users and roles (admin only)
+router.get('/users', requireAuth, requireRole(['admin']), listUsers);
 
 module.exports = router;

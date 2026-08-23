@@ -4,6 +4,7 @@ const rateLimit = require('express-rate-limit');
 const validate = require('../utils/validate');
 const AnalyticsEvent = require('../models/AnalyticsEvent');
 const { createEvent, listEvents, getSummary } = require('../controllers/analytics.controller');
+const { requireAuth } = require('../middlewares/auth.middleware');
 
 const router = express.Router();
 
@@ -32,10 +33,10 @@ router.post(
   createEvent
 );
 
-// GET /api/analytics/events -> raw events (Power BI / dashboard)
-router.get('/events', listEvents);
+// GET /api/analytics/events -> raw events (Power BI / dashboard) - requires login
+router.get('/events', requireAuth, listEvents);
 
-// GET /api/analytics/summary -> aggregate counts (dashboard)
-router.get('/summary', getSummary);
+// GET /api/analytics/summary -> aggregate counts (dashboard) - requires login
+router.get('/summary', requireAuth, getSummary);
 
 module.exports = router;
