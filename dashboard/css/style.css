@@ -86,6 +86,38 @@ body {
   border-radius: 20px;
 }
 
+.user-profile-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.45rem;
+  font-size: 0.8rem;
+  color: var(--muted);
+  background: var(--panel);
+  border: 1px solid var(--border);
+  padding: 0.28rem 0.65rem;
+  border-radius: 20px;
+}
+
+.user-avatar {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 20px;
+  height: 20px;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.08);
+  color: var(--brand-yellow);
+}
+
+.header-user-name {
+  color: var(--text);
+  font-weight: 500;
+  max-width: 140px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
 .status-dot {
   width: 8px;
   height: 8px;
@@ -135,7 +167,7 @@ body {
 /* Stat Cards */
 .stats {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(210px, 1fr));
+  grid-template-columns: repeat(auto-fit, minmax(175px, 1fr));
   gap: 1rem;
   margin-bottom: 2rem;
 }
@@ -162,6 +194,10 @@ body {
 
 .card:nth-child(4) {
   border-top-color: var(--brand-yellow);
+}
+
+.card:nth-child(5) {
+  border-top-color: var(--brand-red);
 }
 
 .card:hover {

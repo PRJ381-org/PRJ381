@@ -33,15 +33,26 @@ function setConnectionStatus(isOnline) {
   }
 }
 
-function renderStats({ leads = 0, events = 0, sessions = 0 }) {
+function formatDuration(ms) {
+  if (!ms || ms <= 0) return '0s';
+  const totalSec = Math.round(ms / 1000);
+  const min = Math.floor(totalSec / 60);
+  const sec = totalSec % 60;
+  if (min === 0) return `${sec}s`;
+  return `${min}m ${sec}s`;
+}
+
+function renderStats({ leads = 0, events = 0, sessions = 0, avgDurationMs = 0 }) {
   const statLeads = document.getElementById('stat-leads');
   const statEvents = document.getElementById('stat-events');
   const statSessions = document.getElementById('stat-sessions');
   const statConversion = document.getElementById('stat-conversion');
+  const statDuration = document.getElementById('stat-duration');
 
   if (statLeads) statLeads.textContent = Number(leads).toLocaleString();
   if (statEvents) statEvents.textContent = Number(events).toLocaleString();
   if (statSessions) statSessions.textContent = Number(sessions).toLocaleString();
+  if (statDuration) statDuration.textContent = formatDuration(avgDurationMs);
 
   if (statConversion) {
     const conversionRate = sessions > 0 ? ((leads / sessions) * 100).toFixed(1) : '0.0';
@@ -206,6 +217,7 @@ async function loadDashboard() {
       leads: leadsRes.count,
       events: summary.totalEvents,
       sessions: summary.uniqueSessions,
+      avgDurationMs: summary.avgSessionDurationMs,
     });
     renderEventTypeChart('events-chart', summary.eventsByType);
     renderAreaChart('area-chart', summary.areas);
@@ -244,6 +256,19 @@ if (btnLogout) {
 async function init() {
   const user = await restoreSession();
   if (!user) return; // restoreSession already redirected to login on failure
+
+  // Render Logged-in User Profile in Header
+  const userBadge = document.getElementById('user-profile-badge');
+  const userName = document.getElementById('header-user-name');
+  const userRole = document.getElementById('header-user-role');
+
+  if (userBadge && userName && userRole) {
+    userName.textContent = user.name || user.email.split('@')[0];
+    const roleName = (user.role || 'viewer').toUpperCase();
+    userRole.textContent = roleName;
+    userRole.className = `role-badge ${user.role === 'admin' ? 'role-admin' : 'role-viewer'}`;
+    userBadge.style.display = 'inline-flex';
+  }
 
   const usersPanel = document.querySelector('.users-panel');
   if (usersPanel) {
