@@ -1,0 +1,92 @@
+const bcrypt = require('bcryptjs');
+const asyncHandler = require('../utils/asyncHandler');
+const User = require('../models/User');
+const { signSessionToken } = require('../utils/jwt');
+const { verifyMicrosoftIdToken } = require('../utils/microsoftAuth');
+
+/**
+ * POST /api/auth/login
+ * Handles user login and returns JWT session token with role information.
+ */
+exports.login = asyncHandler(async (req, res) => {
+  const { email, password } = req.body;
+
+  const user = await User.findOne({ email, provider: 'local' }).select('+password');
+  if (!user || !user.password) {
+    return res.status(401).json({ success: false, message: 'Invalid email or password' });
+  }
+
+  const passwordMatches = await bcrypt.compare(password, user.password);
+  if (!passwordMatches) {
+    return res.status(401).json({ success: false, message: 'Invalid email or password' });
+  }
+
+  const token = signSessionToken(user);
+  res.json({
+    success: true,
+    token,
+    user: { email: user.email, name: user.name, role: user.role },
+  });
+});
+
+/**
+ * POST /api/auth/microsoft
+ * Exchanges a verified Microsoft Entra ID token for a session JWT.
+ * Auto-provisions a User record (role: viewer) on first sign-in.
+ */
+exports.microsoftLogin = asyncHandler(async (req, res) => {
+  const { idToken } = req.body;
+  if (!idToken) {
+    return res.status(400).json({ success: false, message: 'idToken is required' });
+  }
+
+  let decoded;
+  try {
+    decoded = await verifyMicrosoftIdToken(idToken);
+  } catch (err) {
+    return res.status(401).json({ success: false, message: `Microsoft sign-in failed: ${err.message}` });
+  }
+
+  const email = (decoded.preferred_username || decoded.email || '').toLowerCase();
+  if (!email) {
+    return res.status(401).json({ success: false, message: 'Microsoft account has no email claim' });
+  }
+
+  let user = await User.findOne({ email });
+  if (!user) {
+    user = await User.create({
+      email,
+      name: decoded.name || '',
+      provider: 'microsoft',
+      role: 'viewer',
+    });
+  }
+
+  const token = signSessionToken(user);
+  res.json({
+    success: true,
+    token,
+    user: { email: user.email, name: user.name, role: user.role },
+  });
+});
+
+/**
+ * GET /api/auth/me
+ * Returns information for currently authenticated user.
+ */
+exports.me = asyncHandler(async (req, res) => {
+  res.json({ success: true, user: req.user });
+});
+
+/**
+ * GET /api/auth/users
+ * Returns list of registered dashboard users from MongoDB (excluding password hashes).
+ */
+exports.listUsers = asyncHandler(async (req, res) => {
+  const users = await User.find({}, '-password').sort({ createdAt: -1 });
+  res.json({
+    success: true,
+    count: users.length,
+    users,
+  });
+});
