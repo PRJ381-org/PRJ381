@@ -17,3 +17,5 @@ Saved
 # OS / editor cruft
 .DS_Store
 Thumbs.db
+Build/ 
+Builds/ 
