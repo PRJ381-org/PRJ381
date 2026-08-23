@@ -8,27 +8,132 @@
 </head>
 <body>
   <header class="topbar">
-    <h1>VR Campus Tour — Dashboard</h1>
+    <div class="brand">
+      <img src="assets/logo.png" alt="Belgium Campus" class="brand-logo" />
+      <div class="brand-info">
+        <h1>Virtual Campus Open Day</h1>
+        <span class="brand-subtitle">VR Analytics & Telemetry</span>
+      </div>
+    </div>
+    <div class="header-actions">
+      <div class="status-indicator">
+        <span class="status-dot"></span>
+        <span class="status-text" id="connection-status">Live</span>
+      </div>
+      <button id="btn-refresh" class="btn-refresh" title="Refresh data">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <path d="M23 4v6h-6M1 20v-6h6M3.51 9a9 9 0 0 1 14.85-3.36L23 10M1 14l4.64 4.36A9 9 0 0 0 20.49 15"></path>
+        </svg>
+        <span>Refresh</span>
+      </button>
+    </div>
   </header>
 
   <main class="content">
     <section class="stats">
       <div class="card">
-        <span class="card-label">Total Leads</span>
-        <span class="card-value" id="stat-leads">—</span>
-      </div>
-      <div class="card">
-        <span class="card-label">Analytics Events</span>
-        <span class="card-value" id="stat-events">—</span>
-      </div>
-      <div class="card">
-        <span class="card-label">Unique Sessions</span>
+        <div class="card-header">
+          <span class="card-label">Unique Sessions</span>
+          <div class="card-icon card-icon-red">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path>
+              <circle cx="9" cy="7" r="4"></circle>
+              <path d="M23 21v-2a4 4 0 0 0-3-3.87"></path>
+              <path d="M16 3.13a4 4 0 0 1 0 7.75"></path>
+            </svg>
+          </div>
+        </div>
         <span class="card-value" id="stat-sessions">—</span>
+        <span class="card-subtext">Distinct VR visitors</span>
+      </div>
+
+      <div class="card">
+        <div class="card-header">
+          <span class="card-label">Analytics Events</span>
+          <div class="card-icon card-icon-yellow">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <polyline points="22 12 18 12 15 21 9 3 6 12 2 12"></polyline>
+            </svg>
+          </div>
+        </div>
+        <span class="card-value" id="stat-events">—</span>
+        <span class="card-subtext">Total telemetry logs</span>
+      </div>
+
+      <div class="card">
+        <div class="card-header">
+          <span class="card-label">Total Leads</span>
+          <div class="card-icon card-icon-red">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"></path>
+              <polyline points="22,6 12,13 2,6"></polyline>
+            </svg>
+          </div>
+        </div>
+        <span class="card-value" id="stat-leads">—</span>
+        <span class="card-subtext">Student inquiries</span>
+      </div>
+
+      <div class="card">
+        <div class="card-header">
+          <span class="card-label">Conversion Rate</span>
+          <div class="card-icon card-icon-yellow">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <circle cx="12" cy="12" r="10"></circle>
+              <circle cx="12" cy="12" r="6"></circle>
+              <circle cx="12" cy="12" r="2"></circle>
+            </svg>
+          </div>
+        </div>
+        <span class="card-value" id="stat-conversion">—</span>
+        <span class="card-subtext">Inquiry-to-visit ratio</span>
+      </div>
+    </section>
+
+    <section class="charts-grid">
+      <div class="panel chart-panel">
+        <h2>VR Event Breakdown</h2>
+        <div class="chart-container">
+          <canvas id="events-chart"></canvas>
+        </div>
+      </div>
+      <div class="panel chart-panel">
+        <h2>Campus Area Activity</h2>
+        <div class="chart-container">
+          <canvas id="area-chart"></canvas>
+        </div>
+      </div>
+      <div class="panel chart-panel">
+        <h2>Top Visited Hotspots</h2>
+        <div class="chart-container">
+          <canvas id="hotspot-chart"></canvas>
+        </div>
       </div>
     </section>
 
     <section class="panel">
-      <h2>Recent Leads</h2>
+      <div class="panel-header">
+        <h2>Recent Leads</h2>
+        <div class="quick-actions">
+          <div class="action-group">
+            <span class="action-label">Filter:</span>
+            <div class="btn-group" id="leads-filter-group">
+              <button class="btn-chip active" data-filter="all">All</button>
+              <button class="btn-chip" data-filter="reception">Reception</button>
+              <button class="btn-chip" data-filter="technolab">TechnoLab</button>
+              <button class="btn-chip" data-filter="auditorium">Auditorium</button>
+            </div>
+          </div>
+          <div class="action-group">
+            <span class="action-label">Sort:</span>
+            <div class="btn-group" id="leads-sort-group">
+              <button class="btn-chip active" data-sort="newest">Newest ⬇</button>
+              <button class="btn-chip" data-sort="oldest">Oldest ⬆</button>
+              <button class="btn-chip" data-sort="email">A-Z</button>
+            </div>
+          </div>
+        </div>
+      </div>
       <table id="leads-table">
         <thead>
           <tr>
@@ -42,8 +147,45 @@
         </tbody>
       </table>
     </section>
+
+    <section class="panel users-panel">
+      <div class="panel-header">
+        <h2>Registered Users & Access Roles</h2>
+        <div class="quick-actions">
+          <div class="action-group">
+            <span class="action-label">Role:</span>
+            <div class="btn-group" id="users-filter-group">
+              <button class="btn-chip active" data-filter="all">All</button>
+              <button class="btn-chip" data-filter="admin">Admins</button>
+              <button class="btn-chip" data-filter="viewer">Viewers</button>
+            </div>
+          </div>
+          <div class="action-group">
+            <span class="action-label">Sort:</span>
+            <div class="btn-group" id="users-sort-group">
+              <button class="btn-chip active" data-sort="newest">Newest ⬇</button>
+              <button class="btn-chip" data-sort="name">Name A-Z</button>
+            </div>
+          </div>
+        </div>
+      </div>
+      <table id="users-table">
+        <thead>
+          <tr>
+            <th>User / Name</th>
+            <th>Email</th>
+            <th>Role</th>
+            <th>Date Added</th>
+          </tr>
+        </thead>
+        <tbody>
+          <!-- rows populated by js/app.js -->
+        </tbody>
+      </table>
+    </section>
   </main>
 
-  <script src="js/app.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <script type="module" src="js/app.js"></script>
 </body>
 </html>
