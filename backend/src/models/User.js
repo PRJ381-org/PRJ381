@@ -16,8 +16,8 @@ const userSchema = new mongoose.Schema(
     },
     password: {
       type: String,
-      required: true,
       minlength: 6,
+      select: false,
     },
     name: {
       type: String,
@@ -28,6 +28,11 @@ const userSchema = new mongoose.Schema(
       type: String,
       enum: ROLES,
       default: 'viewer',
+    },
+    provider: {
+      type: String,
+      enum: ['local', 'microsoft'],
+      default: 'local',
     },
   },
   { timestamps: true }

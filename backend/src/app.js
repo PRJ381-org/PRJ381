@@ -15,7 +15,19 @@ const errorHandler = require('./utils/errorHandler');
 
 const app = express();
 
-app.use(helmet());
+// Default CSP blocks the CDN scripts the dashboard depends on (Chart.js, MSAL) -
+// explicitly allow jsdelivr for scripts, plus Microsoft's endpoints for sign-in.
+app.use(
+  helmet({
+    contentSecurityPolicy: {
+      directives: {
+        ...helmet.contentSecurityPolicy.getDefaultDirectives(),
+        'script-src': ["'self'", 'https://cdn.jsdelivr.net'],
+        'connect-src': ["'self'", 'https://login.microsoftonline.com'],
+      },
+    },
+  })
+);
 app.use(cors({ origin: CORS_ORIGIN }));
 app.use(express.json({ limit: '100kb' }));
 if (NODE_ENV !== 'test') app.use(morgan('dev'));
