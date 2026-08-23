@@ -112,7 +112,28 @@
     </section>
 
     <section class="panel">
-      <h2>Recent Leads</h2>
+      <div class="panel-header">
+        <h2>Recent Leads</h2>
+        <div class="quick-actions">
+          <div class="action-group">
+            <span class="action-label">Filter:</span>
+            <div class="btn-group" id="leads-filter-group">
+              <button class="btn-chip active" data-filter="all">All</button>
+              <button class="btn-chip" data-filter="reception">Reception</button>
+              <button class="btn-chip" data-filter="technolab">TechnoLab</button>
+              <button class="btn-chip" data-filter="auditorium">Auditorium</button>
+            </div>
+          </div>
+          <div class="action-group">
+            <span class="action-label">Sort:</span>
+            <div class="btn-group" id="leads-sort-group">
+              <button class="btn-chip active" data-sort="newest">Newest ⬇</button>
+              <button class="btn-chip" data-sort="oldest">Oldest ⬆</button>
+              <button class="btn-chip" data-sort="email">A-Z</button>
+            </div>
+          </div>
+        </div>
+      </div>
       <table id="leads-table">
         <thead>
           <tr>
@@ -128,7 +149,26 @@
     </section>
 
     <section class="panel users-panel">
-      <h2>Registered Users & Access Roles</h2>
+      <div class="panel-header">
+        <h2>Registered Users & Access Roles</h2>
+        <div class="quick-actions">
+          <div class="action-group">
+            <span class="action-label">Role:</span>
+            <div class="btn-group" id="users-filter-group">
+              <button class="btn-chip active" data-filter="all">All</button>
+              <button class="btn-chip" data-filter="admin">Admins</button>
+              <button class="btn-chip" data-filter="viewer">Viewers</button>
+            </div>
+          </div>
+          <div class="action-group">
+            <span class="action-label">Sort:</span>
+            <div class="btn-group" id="users-sort-group">
+              <button class="btn-chip active" data-sort="newest">Newest ⬇</button>
+              <button class="btn-chip" data-sort="name">Name A-Z</button>
+            </div>
+          </div>
+        </div>
+      </div>
       <table id="users-table">
         <thead>
           <tr>

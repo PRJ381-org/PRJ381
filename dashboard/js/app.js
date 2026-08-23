@@ -1,12 +1,20 @@
 /**
  * Main Dashboard Application Entry Point.
  *
- * Coordinates authentication state, analytics data loading, chart rendering, and exports.
+ * Coordinates authentication state, analytics data loading, chart rendering, and table interactions.
  */
 import { fetchJson, API_BASE_URL } from './api.js';
 import { isAuthenticated, isAdmin, getCurrentUser } from './auth.js';
 import { renderEventTypeChart, renderAreaChart, renderHotspotChart, renderTimelineChart } from './charts.js';
 import { downloadLeadsCsv, downloadAnalyticsCsv } from './export.js';
+
+// State caches
+let allLeads = [];
+let allUsers = [];
+let leadsFilter = 'all';
+let leadsSort = 'newest';
+let usersFilter = 'all';
+let usersSort = 'newest';
 
 function setConnectionStatus(isOnline) {
   const dot = document.querySelector('.status-dot');
@@ -45,7 +53,7 @@ function renderLeads(leads) {
   tbody.innerHTML = '';
 
   if (!leads || leads.length === 0) {
-    tbody.innerHTML = `<tr><td colspan="3">No leads yet.</td></tr>`;
+    tbody.innerHTML = `<tr><td colspan="3">No matching leads found.</td></tr>`;
     return;
   }
 
@@ -84,6 +92,88 @@ function renderUsers(users) {
   }
 }
 
+function applyLeadsFilterAndSort() {
+  let filtered = [...allLeads];
+
+  // Hotspot filter
+  if (leadsFilter !== 'all') {
+    filtered = filtered.filter((lead) =>
+      (lead.hotspotId || '').toLowerCase().includes(leadsFilter.toLowerCase())
+    );
+  }
+
+  // Sort
+  if (leadsSort === 'newest') {
+    filtered.sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));
+  } else if (leadsSort === 'oldest') {
+    filtered.sort((a, b) => new Date(a.createdAt) - new Date(b.createdAt));
+  } else if (leadsSort === 'email') {
+    filtered.sort((a, b) => (a.email || '').localeCompare(b.email || ''));
+  }
+
+  renderLeads(filtered);
+}
+
+function applyUsersFilterAndSort() {
+  let filtered = [...allUsers];
+
+  // Role filter
+  if (usersFilter !== 'all') {
+    filtered = filtered.filter((u) => u.role === usersFilter);
+  }
+
+  // Sort
+  if (usersSort === 'newest') {
+    filtered.sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));
+  } else if (usersSort === 'name') {
+    filtered.sort((a, b) => (a.name || a.email || '').localeCompare(b.name || b.email || ''));
+  }
+
+  renderUsers(filtered);
+}
+
+function setupQuickActionListeners() {
+  // Leads Filter Buttons
+  document.querySelectorAll('#leads-filter-group .btn-chip').forEach((btn) => {
+    btn.addEventListener('click', () => {
+      document.querySelectorAll('#leads-filter-group .btn-chip').forEach((b) => b.classList.remove('active'));
+      btn.classList.add('active');
+      leadsFilter = btn.dataset.filter;
+      applyLeadsFilterAndSort();
+    });
+  });
+
+  // Leads Sort Buttons
+  document.querySelectorAll('#leads-sort-group .btn-chip').forEach((btn) => {
+    btn.addEventListener('click', () => {
+      document.querySelectorAll('#leads-sort-group .btn-chip').forEach((b) => b.classList.remove('active'));
+      btn.classList.add('active');
+      leadsSort = btn.dataset.sort;
+      applyLeadsFilterAndSort();
+    });
+  });
+
+  // Users Filter Buttons
+  document.querySelectorAll('#users-filter-group .btn-chip').forEach((btn) => {
+    btn.addEventListener('click', () => {
+      document.querySelectorAll('#users-filter-group .btn-chip').forEach((b) => b.classList.remove('active'));
+      btn.classList.add('active');
+      usersFilter = btn.dataset.filter;
+      applyUsersFilterAndSort();
+    });
+  });
+
+  // Users Sort Buttons
+  document.querySelectorAll('#users-sort-group .btn-chip').forEach((btn) => {
+    btn.addEventListener('click', () => {
+      document.querySelectorAll('#users-sort-group .btn-chip').forEach((b) => b.classList.remove('active'));
+      btn.classList.add('active');
+      usersSort = btn.dataset.sort;
+      applyUsersFilterAndSort();
+    });
+  });
+}
+
 function showError(message) {
   const main = document.querySelector('.content');
   if (!main) return;
@@ -117,8 +207,11 @@ async function loadDashboard() {
     renderEventTypeChart('events-chart', summary.eventsByType);
     renderAreaChart('area-chart', summary.areas);
     renderHotspotChart('hotspot-chart', summary.hotspots);
-    renderLeads(leadsRes.leads);
-    renderUsers(usersRes.users);
+
+    allLeads = leadsRes.leads || [];
+    allUsers = usersRes.users || [];
+    applyLeadsFilterAndSort();
+    applyUsersFilterAndSort();
   } catch (err) {
     setConnectionStatus(false);
     showError(
@@ -138,5 +231,6 @@ if (btnRefresh) {
   });
 }
 
-// Initial bootstrap
+// Initialize
+setupQuickActionListeners();
 loadDashboard();

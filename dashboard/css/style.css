@@ -223,15 +223,77 @@ body {
   padding: 1.1rem 1.35rem;
 }
 
-.panel h2 {
-  margin-top: 0;
+.panel-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 0.75rem;
   margin-bottom: 1rem;
+}
+
+.panel h2 {
+  margin: 0;
   font-size: 0.92rem;
   color: var(--text);
   text-transform: uppercase;
   letter-spacing: 0.04em;
   border-left: 3px solid var(--brand-red);
   padding-left: 0.5rem;
+}
+
+.quick-actions {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 0.85rem;
+}
+
+.action-group {
+  display: flex;
+  align-items: center;
+  gap: 0.35rem;
+}
+
+.action-label {
+  font-size: 0.72rem;
+  color: var(--muted);
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+}
+
+.btn-group {
+  display: inline-flex;
+  background: #0b0d11;
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  padding: 2px;
+  gap: 2px;
+}
+
+.btn-chip {
+  background: transparent;
+  border: none;
+  color: var(--muted);
+  font-size: 0.75rem;
+  font-weight: 500;
+  padding: 0.25rem 0.55rem;
+  border-radius: 4px;
+  cursor: pointer;
+  transition: all 0.15s ease;
+}
+
+.btn-chip:hover {
+  color: var(--text);
+  background: rgba(255, 255, 255, 0.05);
+}
+
+.btn-chip.active {
+  background: #1c222e;
+  color: var(--brand-yellow);
+  font-weight: 600;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.3);
 }
 
 /* Charts Grid */
