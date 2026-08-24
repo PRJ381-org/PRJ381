@@ -20,23 +20,33 @@ export function renderEventTypeChart(canvasId, eventsByType = {}) {
   const canvas = document.getElementById(canvasId);
   if (!canvas || typeof Chart === 'undefined') return;
 
-  const labels = Object.keys(eventsByType);
-  const data = Object.values(eventsByType);
+  // Sort by a fixed category order so the legend/slice order is stable too,
+  // not just the colors (same root cause: aggregation order isn't guaranteed).
+  const CATEGORY_ORDER = ['session_start', 'session_end', 'area_enter', 'area_exit', 'hotspot_view', 'info_request'];
+  const sortedKeys = Object.keys(eventsByType).sort(
+    (a, b) => CATEGORY_ORDER.indexOf(a) - CATEGORY_ORDER.indexOf(b)
+  );
+  const labels = sortedKeys;
+  const data = sortedKeys.map((key) => eventsByType[key]);
 
   if (labels.length === 0) {
     labels.push('No data');
     data.push(1);
   }
 
-  // Belgium Campus Brand Theme Colors
-  const backgroundColors = [
-    '#e0292b', // Belgium Campus Red
-    '#f5a623', // Belgium Campus Gold / Yellow
-    '#2ecc71', // Mint Green
-    '#3b82f6', // Slate Blue
-    '#9b59b6', // Amethyst Purple
-    '#e67e22', // Deep Orange
-  ];
+  // Fixed per-category colors so the same event type always gets the same
+  // color, regardless of what order the backend happens to return them in
+  // (MongoDB's $group aggregation doesn't guarantee a stable key order).
+  const EVENT_TYPE_COLORS = {
+    session_start: '#2ecc71', // Mint Green
+    session_end: '#9b59b6', // Amethyst Purple
+    area_enter: '#f5a623', // Belgium Campus Gold / Yellow
+    area_exit: '#3b82f6', // Slate Blue
+    hotspot_view: '#e0292b', // Belgium Campus Red
+    info_request: '#e67e22', // Deep Orange
+  };
+  const FALLBACK_COLOR = '#8e95a2';
+  const backgroundColors = labels.map((label) => EVENT_TYPE_COLORS[label] || FALLBACK_COLOR);
 
   if (eventTypeChartInstance) {
     eventTypeChartInstance.destroy();
