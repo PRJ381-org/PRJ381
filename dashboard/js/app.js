@@ -19,7 +19,6 @@ requireLogin();
 // State caches
 let allLeads = [];
 let allUsers = [];
-let leadsFilter = 'all';
 let leadsSort = 'newest';
 let usersFilter = 'all';
 let usersSort = 'newest';
@@ -72,7 +71,7 @@ function renderLeads(leads) {
   tbody.innerHTML = '';
 
   if (!leads || leads.length === 0) {
-    tbody.innerHTML = `<tr><td colspan="3">No matching leads found.</td></tr>`;
+    tbody.innerHTML = `<tr><td colspan="2">No matching leads found.</td></tr>`;
     return;
   }
 
@@ -80,7 +79,6 @@ function renderLeads(leads) {
     const row = document.createElement('tr');
     row.innerHTML = `
       <td>${lead.email}</td>
-      <td>${lead.hotspotId || '—'}</td>
       <td>${new Date(lead.createdAt).toLocaleString()}</td>
     `;
     tbody.appendChild(row);
@@ -114,13 +112,6 @@ function renderUsers(users) {
 function applyLeadsFilterAndSort() {
   let filtered = [...allLeads];
 
-  // Hotspot filter
-  if (leadsFilter !== 'all') {
-    filtered = filtered.filter((lead) =>
-      (lead.hotspotId || '').toLowerCase().includes(leadsFilter.toLowerCase())
-    );
-  }
-
   // Sort
   if (leadsSort === 'newest') {
     filtered.sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));
@@ -152,16 +143,6 @@ function applyUsersFilterAndSort() {
 }
 
 function setupQuickActionListeners() {
-  // Leads Filter Buttons
-  document.querySelectorAll('#leads-filter-group .btn-chip').forEach((btn) => {
-    btn.addEventListener('click', () => {
-      document.querySelectorAll('#leads-filter-group .btn-chip').forEach((b) => b.classList.remove('active'));
-      btn.classList.add('active');
-      leadsFilter = btn.dataset.filter;
-      applyLeadsFilterAndSort();
-    });
-  });
-
   // Leads Sort Buttons
   document.querySelectorAll('#leads-sort-group .btn-chip').forEach((btn) => {
     btn.addEventListener('click', () => {
@@ -245,7 +226,9 @@ const btnRefresh = document.getElementById('btn-refresh');
 if (btnRefresh) {
   btnRefresh.addEventListener('click', () => {
     btnRefresh.style.opacity = '0.6';
-    loadDashboard().finally(() => {
+    const tasks = [loadDashboard()];
+    if (isAdmin()) tasks.push(loadFeedback());
+    Promise.all(tasks).finally(() => {
       setTimeout(() => (btnRefresh.style.opacity = '1'), 300);
     });
   });

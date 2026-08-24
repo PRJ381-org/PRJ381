@@ -19,15 +19,14 @@ exports.exportLeadsCsv = asyncHandler(async (req, res) => {
   let csv = `# Belgium Campus - Virtual Open Day Student Leads (Admin Export)\n`;
   csv += `# Generated at: ${new Date().toISOString()}\n`;
   csv += `# Total Records: ${leads.length}\n\n`;
-  csv += `Lead ID,Student Email,Hotspot / Kiosk,Session ID,Date & Time (UTC)\n`;
+  csv += `Lead ID,Student Email,Session ID,Date & Time (UTC)\n`;
 
   for (const l of leads) {
     const id = `"${l._id}"`;
     const email = `"${(l.email || '').replace(/"/g, '""')}"`;
-    const hotspot = `"${(l.hotspotId || 'General Kiosk').replace(/"/g, '""')}"`;
     const session = `"${(l.sessionId || 'N/A').replace(/"/g, '""')}"`;
     const date = `"${l.createdAt ? l.createdAt.toISOString() : ''}"`;
-    csv += `${id},${email},${hotspot},${session},${date}\n`;
+    csv += `${id},${email},${session},${date}\n`;
   }
 
   res.setHeader('Content-Type', 'text/csv; charset=utf-8');

@@ -90,7 +90,8 @@ export function renderAreaChart(canvasId, areaData = {}) {
   if (!canvas || typeof Chart === 'undefined') return;
 
   const labels = Object.keys(areaData);
-  const data = Object.values(areaData);
+  // Backend reports seconds; show minutes on the chart instead (1 decimal place).
+  const data = Object.values(areaData).map((seconds) => Math.round((seconds / 60) * 10) / 10);
 
   if (labels.length === 0) {
     labels.push('No area data');
@@ -107,7 +108,7 @@ export function renderAreaChart(canvasId, areaData = {}) {
       labels: labels.map((l) => l.replace(/^(LVL_|BP_)/i, '').replace(/_/g, ' ')),
       datasets: [
         {
-          label: 'Activity (sec / events)',
+          label: 'Minutes',
           data: data,
           backgroundColor: '#e0292b', // Brand Red
           borderRadius: 4,
@@ -122,7 +123,11 @@ export function renderAreaChart(canvasId, areaData = {}) {
       },
       scales: {
         x: darkGridOptions,
-        y: { ...darkGridOptions, beginAtZero: true },
+        y: {
+          ...darkGridOptions,
+          beginAtZero: true,
+          title: { display: true, text: 'Minutes', color: '#8e95a2', font: { size: 11 } },
+        },
       },
     },
   });
@@ -168,7 +173,11 @@ export function renderHotspotChart(canvasId, hotspotData = {}) {
         legend: { display: false },
       },
       scales: {
-        x: { ...darkGridOptions, beginAtZero: true },
+        x: {
+          ...darkGridOptions,
+          beginAtZero: true,
+          title: { display: true, text: 'Views', color: '#8e95a2', font: { size: 11 } },
+        },
         y: darkGridOptions,
       },
     },
