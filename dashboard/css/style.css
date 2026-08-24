@@ -25,6 +25,111 @@ body {
   min-height: 100vh;
 }
 
+/* Sidebar */
+:root {
+  --sidebar-width: 68px;
+  --neon: #00e5ff;
+}
+
+.sidebar {
+  position: fixed;
+  top: 0;
+  left: 0;
+  bottom: 0;
+  width: var(--sidebar-width);
+  background: #0f1218;
+  border-right: 1px solid var(--border);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 1rem 0;
+  gap: 1.5rem;
+  z-index: 20;
+}
+
+.sidebar-logo {
+  width: 34px;
+  height: 34px;
+  border-radius: 8px;
+  background: #ffffff;
+  padding: 2px;
+  object-fit: contain;
+}
+
+.sidebar-nav {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  width: 100%;
+  align-items: center;
+}
+
+.sidebar-link {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.3rem;
+  width: 52px;
+  padding: 0.6rem 0.25rem;
+  background: transparent;
+  border: none;
+  border-radius: 10px;
+  color: var(--muted);
+  cursor: pointer;
+  transition: color 0.15s ease, background 0.15s ease;
+}
+
+.sidebar-link:hover {
+  color: var(--text);
+  background: rgba(255, 255, 255, 0.04);
+}
+
+.sidebar-label {
+  font-size: 0.62rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.03em;
+}
+
+.sidebar-glow {
+  display: none;
+}
+
+.sidebar-link.active {
+  color: var(--neon);
+}
+
+.sidebar-link.active .sidebar-glow {
+  display: block;
+  position: absolute;
+  top: 4px;
+  right: 6px;
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: var(--neon);
+  box-shadow: 0 0 6px 2px var(--neon), 0 0 14px 4px rgba(0, 229, 255, 0.6);
+}
+
+.main-wrapper {
+  margin-left: var(--sidebar-width);
+}
+
+.page {
+  display: none;
+}
+
+.page.active {
+  display: block;
+}
+
+.feedback-status {
+  color: var(--muted);
+  font-size: 0.88rem;
+  padding: 0.5rem 0;
+}
+
 /* Header & Branding */
 .topbar {
   padding: 1rem 2rem;

@@ -11,6 +11,7 @@ import {
   downloadSummaryCsv,
   downloadTelemetryCsv,
 } from './export.js';
+import { loadFeedback } from './feedback.js';
 
 // Bail out to the login page immediately if there's no session at all.
 requireLogin();
@@ -341,6 +342,7 @@ async function init() {
   setupExportListeners();
   setupQuickActionListeners();
   loadDashboard();
+  if (isUserAdmin) loadFeedback();
 }
 
 init();

@@ -10,6 +10,7 @@ const authRoutes = require('./routes/auth.routes');
 const leadsRoutes = require('./routes/leads.routes');
 const analyticsRoutes = require('./routes/analytics.routes');
 const exportRoutes = require('./routes/export.routes');
+const feedbackRoutes = require('./routes/feedback.routes');
 const notFound = require('./utils/notFound');
 const errorHandler = require('./utils/errorHandler');
 
@@ -40,6 +41,7 @@ app.use('/api/auth', authRoutes);
 app.use('/api/leads', leadsRoutes);
 app.use('/api/analytics', analyticsRoutes);
 app.use('/api/export', exportRoutes);
+app.use('/api/feedback', feedbackRoutes);
 
 app.use(notFound);
 app.use(errorHandler);
