@@ -157,6 +157,105 @@ body {
   transform: scale(0.97);
 }
 
+/* Export Dropdown */
+.export-dropdown {
+  position: relative;
+  display: inline-block;
+}
+
+.btn-export-main {
+  border-color: rgba(245, 166, 35, 0.35);
+  color: var(--brand-yellow);
+}
+
+.btn-export-main:hover {
+  background: rgba(245, 166, 35, 0.1);
+  border-color: var(--brand-yellow);
+}
+
+.chevron-icon {
+  margin-left: 0.15rem;
+  transition: transform 0.2s ease;
+}
+
+.export-dropdown.open .chevron-icon {
+  transform: rotate(180deg);
+}
+
+.export-menu {
+  display: none;
+  position: absolute;
+  top: calc(100% + 8px);
+  right: 0;
+  min-width: 260px;
+  background: #13171f;
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.6);
+  z-index: 1000;
+  padding: 0.4rem 0;
+  animation: fadeIn 0.15s ease-out;
+}
+
+.export-dropdown.open .export-menu {
+  display: block;
+}
+
+.export-menu-header {
+  padding: 0.4rem 0.85rem;
+  font-size: 0.7rem;
+  color: var(--muted);
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  font-weight: 600;
+  border-bottom: 1px solid var(--border);
+  margin-bottom: 0.25rem;
+}
+
+.export-menu-item {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  padding: 0.6rem 0.85rem;
+  background: transparent;
+  border: none;
+  color: var(--text);
+  text-align: left;
+  cursor: pointer;
+  transition: background 0.15s ease;
+}
+
+.export-menu-item:hover {
+  background: rgba(255, 255, 255, 0.05);
+}
+
+.export-item-icon {
+  font-size: 1.1rem;
+  line-height: 1;
+}
+
+.export-item-text {
+  display: flex;
+  flex-direction: column;
+  gap: 0.1rem;
+}
+
+.export-item-text strong {
+  font-size: 0.82rem;
+  color: var(--text);
+}
+
+.export-item-text small {
+  font-size: 0.72rem;
+  color: var(--muted);
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(-4px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
 /* Layout */
 .content {
   padding: 2rem;
@@ -330,6 +429,21 @@ body {
   color: var(--brand-yellow);
   font-weight: 600;
   box-shadow: 0 1px 3px rgba(0, 0, 0, 0.3);
+}
+
+.btn-chip-export {
+  border: 1px solid rgba(245, 166, 35, 0.35);
+  color: var(--brand-yellow);
+  background: rgba(245, 166, 35, 0.08);
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
+}
+
+.btn-chip-export:hover {
+  background: rgba(245, 166, 35, 0.18);
+  border-color: var(--brand-yellow);
+  color: var(--text);
 }
 
 /* Charts Grid */

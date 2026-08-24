@@ -6,7 +6,11 @@
 import { fetchJson, API_BASE_URL } from './api.js';
 import { requireLogin, restoreSession, isAdmin, getCurrentUser, logout } from './auth.js';
 import { renderEventTypeChart, renderAreaChart, renderHotspotChart, renderTimelineChart } from './charts.js';
-import { downloadLeadsCsv, downloadAnalyticsCsv } from './export.js';
+import {
+  downloadLeadsCsv,
+  downloadSummaryCsv,
+  downloadTelemetryCsv,
+} from './export.js';
 
 // Bail out to the login page immediately if there's no session at all.
 requireLogin();
@@ -252,6 +256,54 @@ if (btnLogout) {
   btnLogout.addEventListener('click', logout);
 }
 
+// Wire up Export Dropdown & Download Buttons
+function setupExportListeners() {
+  const exportDropdown = document.getElementById('admin-export-dropdown');
+  const btnExportToggle = document.getElementById('btn-export-toggle');
+  const btnExportLeads = document.getElementById('export-leads-btn');
+  const btnExportSummary = document.getElementById('export-summary-btn');
+  const btnExportTelemetry = document.getElementById('export-telemetry-btn');
+  const btnQuickExportLeads = document.getElementById('btn-quick-export-leads');
+
+  if (btnExportToggle && exportDropdown) {
+    btnExportToggle.addEventListener('click', (e) => {
+      e.stopPropagation();
+      exportDropdown.classList.toggle('open');
+    });
+
+    document.addEventListener('click', (e) => {
+      if (!exportDropdown.contains(e.target)) {
+        exportDropdown.classList.remove('open');
+      }
+    });
+  }
+
+  if (btnExportLeads) {
+    btnExportLeads.addEventListener('click', () => {
+      if (exportDropdown) exportDropdown.classList.remove('open');
+      downloadLeadsCsv();
+    });
+  }
+
+  if (btnExportSummary) {
+    btnExportSummary.addEventListener('click', () => {
+      if (exportDropdown) exportDropdown.classList.remove('open');
+      downloadSummaryCsv();
+    });
+  }
+
+  if (btnExportTelemetry) {
+    btnExportTelemetry.addEventListener('click', () => {
+      if (exportDropdown) exportDropdown.classList.remove('open');
+      downloadTelemetryCsv();
+    });
+  }
+
+  if (btnQuickExportLeads) {
+    btnQuickExportLeads.addEventListener('click', downloadLeadsCsv);
+  }
+}
+
 // Initialize
 async function init() {
   const user = await restoreSession();
@@ -270,11 +322,23 @@ async function init() {
     userBadge.style.display = 'inline-flex';
   }
 
+  // Admin-only components display control
+  const isUserAdmin = isAdmin();
   const usersPanel = document.querySelector('.users-panel');
   if (usersPanel) {
-    usersPanel.style.display = isAdmin() ? '' : 'none';
+    usersPanel.style.display = isUserAdmin ? '' : 'none';
   }
 
+  const exportDropdown = document.getElementById('admin-export-dropdown');
+  if (exportDropdown) {
+    exportDropdown.style.display = isUserAdmin ? 'inline-block' : 'none';
+  }
+
+  document.querySelectorAll('.admin-only-action').forEach((el) => {
+    el.style.display = isUserAdmin ? 'flex' : 'none';
+  });
+
+  setupExportListeners();
   setupQuickActionListeners();
   loadDashboard();
 }
