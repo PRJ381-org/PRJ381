@@ -1,8 +1,15 @@
 const express = require('express');
-const { exportLeadsCsv, exportAnalyticsCsv } = require('../controllers/export.controller');
+const {
+  exportLeadsCsv,
+  exportAnalyticsCsv,
+  exportSummaryCsv,
+} = require('../controllers/export.controller');
 const { requireAuth, requireRole } = require('../middlewares/auth.middleware');
 
 const router = express.Router();
+
+// GET /api/export/summary (Admin only)
+router.get('/summary', requireAuth, requireRole(['admin']), exportSummaryCsv);
 
 // GET /api/export/leads (Admin only)
 router.get('/leads', requireAuth, requireRole(['admin']), exportLeadsCsv);

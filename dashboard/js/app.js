@@ -6,7 +6,11 @@
 import { fetchJson, API_BASE_URL } from './api.js';
 import { requireLogin, restoreSession, isAdmin, getCurrentUser, logout } from './auth.js';
 import { renderEventTypeChart, renderAreaChart, renderHotspotChart, renderTimelineChart } from './charts.js';
-import { downloadLeadsCsv, downloadAnalyticsCsv } from './export.js';
+import {
+  downloadLeadsCsv,
+  downloadSummaryCsv,
+  downloadTelemetryCsv,
+} from './export.js';
 
 // Bail out to the login page immediately if there's no session at all.
 requireLogin();
@@ -33,15 +37,26 @@ function setConnectionStatus(isOnline) {
   }
 }
 
-function renderStats({ leads = 0, events = 0, sessions = 0 }) {
+function formatDuration(ms) {
+  if (!ms || ms <= 0) return '0s';
+  const totalSec = Math.round(ms / 1000);
+  const min = Math.floor(totalSec / 60);
+  const sec = totalSec % 60;
+  if (min === 0) return `${sec}s`;
+  return `${min}m ${sec}s`;
+}
+
+function renderStats({ leads = 0, events = 0, sessions = 0, avgDurationMs = 0 }) {
   const statLeads = document.getElementById('stat-leads');
   const statEvents = document.getElementById('stat-events');
   const statSessions = document.getElementById('stat-sessions');
   const statConversion = document.getElementById('stat-conversion');
+  const statDuration = document.getElementById('stat-duration');
 
   if (statLeads) statLeads.textContent = Number(leads).toLocaleString();
   if (statEvents) statEvents.textContent = Number(events).toLocaleString();
   if (statSessions) statSessions.textContent = Number(sessions).toLocaleString();
+  if (statDuration) statDuration.textContent = formatDuration(avgDurationMs);
 
   if (statConversion) {
     const conversionRate = sessions > 0 ? ((leads / sessions) * 100).toFixed(1) : '0.0';
@@ -206,6 +221,7 @@ async function loadDashboard() {
       leads: leadsRes.count,
       events: summary.totalEvents,
       sessions: summary.uniqueSessions,
+      avgDurationMs: summary.avgSessionDurationMs,
     });
     renderEventTypeChart('events-chart', summary.eventsByType);
     renderAreaChart('area-chart', summary.areas);
@@ -240,16 +256,89 @@ if (btnLogout) {
   btnLogout.addEventListener('click', logout);
 }
 
+// Wire up Export Dropdown & Download Buttons
+function setupExportListeners() {
+  const exportDropdown = document.getElementById('admin-export-dropdown');
+  const btnExportToggle = document.getElementById('btn-export-toggle');
+  const btnExportLeads = document.getElementById('export-leads-btn');
+  const btnExportSummary = document.getElementById('export-summary-btn');
+  const btnExportTelemetry = document.getElementById('export-telemetry-btn');
+  const btnQuickExportLeads = document.getElementById('btn-quick-export-leads');
+
+  if (btnExportToggle && exportDropdown) {
+    btnExportToggle.addEventListener('click', (e) => {
+      e.stopPropagation();
+      exportDropdown.classList.toggle('open');
+    });
+
+    document.addEventListener('click', (e) => {
+      if (!exportDropdown.contains(e.target)) {
+        exportDropdown.classList.remove('open');
+      }
+    });
+  }
+
+  if (btnExportLeads) {
+    btnExportLeads.addEventListener('click', () => {
+      if (exportDropdown) exportDropdown.classList.remove('open');
+      downloadLeadsCsv();
+    });
+  }
+
+  if (btnExportSummary) {
+    btnExportSummary.addEventListener('click', () => {
+      if (exportDropdown) exportDropdown.classList.remove('open');
+      downloadSummaryCsv();
+    });
+  }
+
+  if (btnExportTelemetry) {
+    btnExportTelemetry.addEventListener('click', () => {
+      if (exportDropdown) exportDropdown.classList.remove('open');
+      downloadTelemetryCsv();
+    });
+  }
+
+  if (btnQuickExportLeads) {
+    btnQuickExportLeads.addEventListener('click', downloadLeadsCsv);
+  }
+}
+
 // Initialize
 async function init() {
   const user = await restoreSession();
   if (!user) return; // restoreSession already redirected to login on failure
 
-  const usersPanel = document.querySelector('.users-panel');
-  if (usersPanel) {
-    usersPanel.style.display = isAdmin() ? '' : 'none';
+  // Render Logged-in User Profile in Header
+  const userBadge = document.getElementById('user-profile-badge');
+  const userName = document.getElementById('header-user-name');
+  const userRole = document.getElementById('header-user-role');
+
+  if (userBadge && userName && userRole) {
+    userName.textContent = user.name || user.email.split('@')[0];
+    const roleName = (user.role || 'viewer').toUpperCase();
+    userRole.textContent = roleName;
+    userRole.className = `role-badge ${user.role === 'admin' ? 'role-admin' : 'role-viewer'}`;
+    userBadge.style.display = 'inline-flex';
   }
 
+  // Admin-only components display control
+  const isUserAdmin = isAdmin();
+  const usersPanel = document.querySelector('.users-panel');
+  if (usersPanel) {
+    usersPanel.style.display = isUserAdmin ? '' : 'none';
+  }
+
+  const exportDropdown = document.getElementById('admin-export-dropdown');
+  if (exportDropdown) {
+    exportDropdown.style.display = isUserAdmin ? 'inline-block' : 'none';
+  }
+
+  document.querySelectorAll('.admin-only-action').forEach((el) => {
+    el.style.display = isUserAdmin ? 'flex' : 'none';
+  });
+
+  setupExportListeners();
   setupQuickActionListeners();
   loadDashboard();
 }

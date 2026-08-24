@@ -20,6 +20,53 @@
         <span class="status-dot"></span>
         <span class="status-text" id="connection-status">Live</span>
       </div>
+      <div id="user-profile-badge" class="user-profile-badge" style="display: none;">
+        <div class="user-avatar">
+          <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path>
+            <circle cx="12" cy="7" r="4"></circle>
+          </svg>
+        </div>
+        <span id="header-user-name" class="header-user-name">User</span>
+        <span id="header-user-role" class="role-badge role-viewer">VIEWER</span>
+      </div>
+      <div class="export-dropdown" id="admin-export-dropdown" style="display: none;">
+        <button id="btn-export-toggle" class="btn-refresh btn-export-main" title="Export Reports">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
+            <polyline points="7 10 12 15 17 10"></polyline>
+            <line x1="12" y1="15" x2="12" y2="3"></line>
+          </svg>
+          <span>Export Data</span>
+          <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" class="chevron-icon">
+            <polyline points="6 9 12 15 18 9"></polyline>
+          </svg>
+        </button>
+        <div class="export-menu" id="export-menu">
+          <div class="export-menu-header">Admin Export Reports</div>
+          <button class="export-menu-item" id="export-leads-btn">
+            <span class="export-item-icon">📩</span>
+            <div class="export-item-text">
+              <strong>Student Leads (.CSV)</strong>
+              <small>All prospective student inquiries</small>
+            </div>
+          </button>
+          <button class="export-menu-item" id="export-summary-btn">
+            <span class="export-item-icon">📊</span>
+            <div class="export-item-text">
+              <strong>Executive Summary (.CSV)</strong>
+              <small>KPIs, zone dwell times & hotspots</small>
+            </div>
+          </button>
+          <button class="export-menu-item" id="export-telemetry-btn">
+            <span class="export-item-icon">⚡</span>
+            <div class="export-item-text">
+              <strong>Raw Telemetry Logs (.CSV)</strong>
+              <small>Detailed event logs for Power BI</small>
+            </div>
+          </button>
+        </div>
+      </div>
       <button id="btn-refresh" class="btn-refresh" title="Refresh data">
         <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
           <path d="M23 4v6h-6M1 20v-6h6M3.51 9a9 9 0 0 1 14.85-3.36L23 10M1 14l4.64 4.36A9 9 0 0 0 20.49 15"></path>
@@ -70,8 +117,22 @@
 
       <div class="card">
         <div class="card-header">
-          <span class="card-label">Total Leads</span>
+          <span class="card-label">Avg Visit Time</span>
           <div class="card-icon card-icon-red">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <circle cx="12" cy="12" r="10"></circle>
+              <polyline points="12 6 12 12 16 14"></polyline>
+            </svg>
+          </div>
+        </div>
+        <span class="card-value" id="stat-duration">—</span>
+        <span class="card-subtext">Avg exploration dwell</span>
+      </div>
+
+      <div class="card">
+        <div class="card-header">
+          <span class="card-label">Total Leads</span>
+          <div class="card-icon card-icon-yellow">
             <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
               <path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"></path>
               <polyline points="22,6 12,13 2,6"></polyline>
@@ -85,7 +146,7 @@
       <div class="card">
         <div class="card-header">
           <span class="card-label">Conversion Rate</span>
-          <div class="card-icon card-icon-yellow">
+          <div class="card-icon card-icon-red">
             <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
               <circle cx="12" cy="12" r="10"></circle>
               <circle cx="12" cy="12" r="6"></circle>
@@ -139,6 +200,16 @@
               <button class="btn-chip" data-sort="oldest">Oldest ⬆</button>
               <button class="btn-chip" data-sort="email">A-Z</button>
             </div>
+          </div>
+          <div class="action-group admin-only-action" style="display: none;">
+            <button id="btn-quick-export-leads" class="btn-chip btn-chip-export" title="Export Leads to CSV">
+              <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
+                <polyline points="7 10 12 15 17 10"></polyline>
+                <line x1="12" y1="15" x2="12" y2="3"></line>
+              </svg>
+              Export CSV
+            </button>
           </div>
         </div>
       </div>
