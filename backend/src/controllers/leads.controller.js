@@ -1,15 +1,42 @@
 const Lead = require('../models/Lead');
 const asyncHandler = require('../utils/asyncHandler');
 
+/**
+ * Helper to build MongoDB date filter from timeframe query parameter.
+ */
+function getDateFilter(timeframe) {
+  if (!timeframe || timeframe === 'all') return null;
+
+  if (timeframe === 'today') {
+    const start = new Date();
+    start.setHours(0, 0, 0, 0);
+    return { createdAt: { $gte: start } };
+  }
+  if (timeframe === '24h') {
+    return { createdAt: { $gte: new Date(Date.now() - 24 * 60 * 60 * 1000) } };
+  }
+  if (timeframe === '7d') {
+    return { createdAt: { $gte: new Date(Date.now() - 7 * 24 * 60 * 60 * 1000) } };
+  }
+  if (timeframe === '30d') {
+    return { createdAt: { $gte: new Date(Date.now() - 30 * 24 * 60 * 60 * 1000) } };
+  }
+  return null;
+}
+
 exports.createLead = asyncHandler(async (req, res) => {
   const { email, hotspotId, sessionId } = req.body;
   const lead = await Lead.create({ email, hotspotId, sessionId });
   res.status(201).json({ success: true, id: lead._id });
 });
 
-// GET /api/leads -> all leads, for Power BI / dashboard consumption
+// GET /api/leads -> all leads, with optional timeframe filtering
 exports.listLeads = asyncHandler(async (req, res) => {
+  const { timeframe = 'all' } = req.query;
+  const dateFilter = getDateFilter(timeframe);
   const limit = Math.min(parseInt(req.query.limit, 10) || 200, 1000);
-  const leads = await Lead.find().sort({ createdAt: -1 }).limit(limit);
-  res.json({ success: true, count: leads.length, leads });
+
+  const query = dateFilter || {};
+  const leads = await Lead.find(query).sort({ createdAt: -1 }).limit(limit);
+  res.json({ success: true, timeframe, count: leads.length, leads });
 });
