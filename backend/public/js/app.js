@@ -3,7 +3,7 @@
  *
  * Coordinates authentication state, analytics data loading, chart rendering, and table interactions.
  */
-import { fetchJson, API_BASE_URL } from './api.js';
+import { fetchJson } from './api.js';
 import { requireLogin, restoreSession, isAdmin, getCurrentUser, logout } from './auth.js';
 import { renderEventTypeChart, renderAreaChart, renderHotspotChart, renderTimelineChart } from './charts.js';
 import {
@@ -216,7 +216,7 @@ async function loadDashboard() {
   } catch (err) {
     setConnectionStatus(false);
     showError(
-      `Could not load data from backend (${err.message}). Is it running at ${API_BASE_URL}?`
+      `Could not load data from backend (${err.message}). Is the server running at ${window.location.origin}?`
     );
   }
 }

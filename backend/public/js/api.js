@@ -2,11 +2,10 @@
  * Centralized API client module.
  */
 
-// Dynamically resolves local backend or hosted server
-export const API_BASE_URL =
-  window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1'
-    ? 'http://localhost:4000'
-    : window.location.origin;
+// The dashboard is served by the same Express app that exposes the API, so
+// every call is same-origin and relative. Keeping this empty is what makes the
+// app portable across localhost, Azure and Hostinger with no rebuild.
+export const API_BASE_URL = '';
 
 /**
  * Fetch wrapper that attaches auth token if present.
