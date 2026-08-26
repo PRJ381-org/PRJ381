@@ -15,6 +15,10 @@ yarn-error.log*
  
 # Test coverage
 coverage/
+
+# Build output — the deploy zip is rebuilt from source by `npm run package`,
+# so committing it would just add a binary that goes stale.
+dist/
  
 # OS / editor cruft
 .DS_Store

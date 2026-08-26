@@ -3,7 +3,7 @@
  *
  * Coordinates authentication state, analytics data loading, chart rendering, and table interactions.
  */
-import { fetchJson, API_BASE_URL } from './api.js';
+import { fetchJson } from './api.js';
 import { requireLogin, restoreSession, isAdmin, getCurrentUser, logout } from './auth.js';
 import { renderEventTypeChart, renderAreaChart, renderHotspotChart, renderTimelineChart } from './charts.js';
 import {
@@ -19,6 +19,7 @@ requireLogin();
 // State caches
 let allLeads = [];
 let allUsers = [];
+let currentTimeframe = 'all';
 let leadsSort = 'newest';
 let usersFilter = 'all';
 let usersSort = 'newest';
@@ -143,6 +144,16 @@ function applyUsersFilterAndSort() {
 }
 
 function setupQuickActionListeners() {
+  // Timeframe Filter Buttons
+  document.querySelectorAll('#timeframe-filter-group .btn-chip').forEach((btn) => {
+    btn.addEventListener('click', () => {
+      document.querySelectorAll('#timeframe-filter-group .btn-chip').forEach((b) => b.classList.remove('active'));
+      btn.classList.add('active');
+      currentTimeframe = btn.dataset.timeframe;
+      loadDashboard();
+    });
+  });
+
   // Leads Sort Buttons
   document.querySelectorAll('#leads-sort-group .btn-chip').forEach((btn) => {
     btn.addEventListener('click', () => {
@@ -193,8 +204,8 @@ async function loadDashboard() {
 
   try {
     const [summary, leadsRes, usersRes] = await Promise.all([
-      fetchJson('/api/analytics/summary'),
-      fetchJson('/api/leads'),
+      fetchJson(`/api/analytics/summary?timeframe=${encodeURIComponent(currentTimeframe)}`),
+      fetchJson(`/api/leads?timeframe=${encodeURIComponent(currentTimeframe)}`),
       fetchJson('/api/auth/users').catch(() => ({ users: [] })),
     ]);
 
@@ -216,7 +227,7 @@ async function loadDashboard() {
   } catch (err) {
     setConnectionStatus(false);
     showError(
-      `Could not load data from backend (${err.message}). Is it running at ${API_BASE_URL}?`
+      `Could not load data from backend (${err.message}). Is the server running at ${window.location.origin}?`
     );
   }
 }
