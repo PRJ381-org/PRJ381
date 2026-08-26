@@ -368,6 +368,38 @@ body {
   margin: 0 auto;
 }
 
+/* Timeframe Filter Toolbar */
+.time-filter-section {
+  margin-bottom: 1.25rem;
+}
+
+.time-filter-wrapper {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 0.75rem;
+  background: var(--panel);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  padding: 0.55rem 0.95rem;
+}
+
+.time-filter-label {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.45rem;
+  font-size: 0.76rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  color: var(--muted);
+}
+
+.time-filter-label svg {
+  color: var(--brand-yellow);
+}
+
 /* Stat Cards */
 .stats {
   display: grid;

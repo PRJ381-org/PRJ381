@@ -109,6 +109,25 @@
 
   <main class="content">
   <section id="page-home" class="page active">
+    <section class="time-filter-section">
+      <div class="time-filter-wrapper">
+        <div class="time-filter-label">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <circle cx="12" cy="12" r="10"></circle>
+            <polyline points="12 6 12 12 16 14"></polyline>
+          </svg>
+          <span>Time Range:</span>
+        </div>
+        <div class="btn-group" id="timeframe-filter-group">
+          <button class="btn-chip active" data-timeframe="all">All Time</button>
+          <button class="btn-chip" data-timeframe="today">Today's Open Day</button>
+          <button class="btn-chip" data-timeframe="24h">Past 24 Hours</button>
+          <button class="btn-chip" data-timeframe="7d">Past 7 Days</button>
+          <button class="btn-chip" data-timeframe="30d">Past 30 Days</button>
+        </div>
+      </div>
+    </section>
+
     <section class="stats">
       <div class="card">
         <div class="card-header">
