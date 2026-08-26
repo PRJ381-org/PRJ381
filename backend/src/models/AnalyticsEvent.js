@@ -1,5 +1,8 @@
 const mongoose = require('mongoose');
 
+// Adding to this list is safe; removing or renaming is not. The enum is
+// validated on write, so a client sending a type absent here gets a 400 and the
+// event is lost for good - keep it a superset of what any shipped build emits.
 const EVENT_TYPES = [
   'session_start',
   'session_end',
@@ -7,6 +10,7 @@ const EVENT_TYPES = [
   'area_exit',
   'hotspot_view',
   'info_request',
+  'objective_complete',
 ];
 
 // Anonymous engagement telemetry. sessionId comes from Firebase anonymous auth;
@@ -19,6 +23,13 @@ const analyticsEventSchema = new mongoose.Schema(
     hotspotId: { type: String, trim: true },
     durationMs: { type: Number, min: 0 },
     seq: { type: Number, index: true }, // client fire-order, for deterministic sorting
+    // Build provenance. All optional, because the shipped client sends none of
+    // them. Without these, telemetry from a Quest build and a Windows build is
+    // indistinguishable, so "did the Android build actually work on the day?"
+    // becomes unanswerable after the fact.
+    platform: { type: String, trim: true },
+    buildId: { type: String, trim: true },
+    appVersion: { type: String, trim: true },
     metadata: { type: mongoose.Schema.Types.Mixed },
   },
   { timestamps: true }

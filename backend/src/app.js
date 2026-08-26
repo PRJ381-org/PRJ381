@@ -50,15 +50,24 @@ app.use(cors(corsOptions));
 app.use(express.json({ limit: '100kb' }));
 if (NODE_ENV !== 'test') app.use(morgan('dev'));
 
-// Static serving for dashboard web application
-app.use('/dashboard', express.static(path.join(__dirname, '../../dashboard')));
-
+// API routes are mounted before the static handler so nothing dropped into
+// public/ can ever shadow an endpoint.
 app.use('/health', healthRoutes);
 app.use('/api/auth', authRoutes);
 app.use('/api/leads', leadsRoutes);
 app.use('/api/analytics', analyticsRoutes);
 app.use('/api/export', exportRoutes);
 app.use('/api/feedback', feedbackRoutes);
+
+// The dashboard lives inside the app folder (not a sibling directory) so the
+// whole thing deploys as one self-contained zip. Served at "/"; index.html's
+// own script calls requireLogin() and bounces to login.html when there is no
+// session. That gating is presentation only - every data endpoint above is
+// still enforced server-side.
+app.use(express.static(path.join(__dirname, '..', 'public')));
+
+// Old links pointed at /dashboard; keep them working.
+app.get(['/dashboard', '/dashboard/*'], (req, res) => res.redirect(302, '/'));
 
 app.use(notFound);
 app.use(errorHandler);

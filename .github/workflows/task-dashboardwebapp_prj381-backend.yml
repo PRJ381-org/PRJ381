@@ -3,17 +3,11 @@
 
 name: Build and deploy Node.js app to Azure Web App - prj381-backend
 
+# Azure is now the ROLLBACK target, not the live host - the app is served from
+# Hostinger (see DEPLOY_HOSTINGER.md). All automatic push triggers are removed
+# so nothing can redeploy Azure by accident; it can still be run by hand from
+# the Actions tab if we need to fall back.
 on:
-  push:
-    branches:
-      - staging
-      - main
-      # Existing deploy path. Remove only once a workflow_dispatch deploy from
-      # staging/main has succeeded.
-      - task/DashboardWebApp
-    paths:
-      - 'backend/**'
-      - 'dashboard/**'
   workflow_dispatch:
 
 jobs:
@@ -41,9 +35,12 @@ jobs:
         uses: actions/upload-artifact@v4
         with:
           name: node-app
-          path: |
-            backend
-            dashboard
+          # The dashboard now lives in backend/public, so backend/ is the whole
+          # app. With a single search path the artifact root becomes backend/
+          # itself, i.e. package.json and src/ sit at the wwwroot root.
+          # If Azure is ever redeployed from here its Startup Command must be
+          # "node src/index.js", NOT the previous "node backend/src/index.js".
+          path: backend
 
   deploy:
     runs-on: ubuntu-latest
