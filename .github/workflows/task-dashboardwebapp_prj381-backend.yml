@@ -6,7 +6,14 @@ name: Build and deploy Node.js app to Azure Web App - prj381-backend
 on:
   push:
     branches:
+      - staging
+      - main
+      # Existing deploy path. Remove only once a workflow_dispatch deploy from
+      # staging/main has succeeded.
       - task/DashboardWebApp
+    paths:
+      - 'backend/**'
+      - 'dashboard/**'
   workflow_dispatch:
 
 jobs:

@@ -16,6 +16,23 @@ const errorHandler = require('./utils/errorHandler');
 
 const app = express();
 
+// Azure App Service terminates TLS at a front end and forwards over one hop.
+// Without this, req.ip is the front end's address for every request, so
+// express-rate-limit buckets all traffic into a single counter and a room full
+// of headsets shares one quota.
+app.set('trust proxy', 1);
+
+// CORS_ORIGIN is a comma-separated allowlist. A literal "*" disables the
+// allowlist entirely. Requests without an Origin header (the Unreal client,
+// curl, server-to-server) are always allowed - CORS only governs browsers.
+const allowedOrigins = CORS_ORIGIN.split(',')
+  .map((origin) => origin.trim())
+  .filter(Boolean);
+
+const corsOptions = allowedOrigins.includes('*')
+  ? { origin: '*' }
+  : { origin: (origin, cb) => cb(null, !origin || allowedOrigins.includes(origin)) };
+
 // Default CSP blocks the CDN scripts the dashboard depends on (Chart.js, MSAL) -
 // explicitly allow jsdelivr for scripts, plus Microsoft's endpoints for sign-in.
 app.use(
@@ -29,7 +46,7 @@ app.use(
     },
   })
 );
-app.use(cors({ origin: CORS_ORIGIN }));
+app.use(cors(corsOptions));
 app.use(express.json({ limit: '100kb' }));
 if (NODE_ENV !== 'test') app.use(morgan('dev'));
 
