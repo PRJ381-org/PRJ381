@@ -38,6 +38,10 @@
 		{
 			"Name": "MetaHumanGenerator",
 			"Enabled": true
+		},
+		{
+			"Name": "HairCardGenerator",
+			"Enabled": true
 		}
 	],
 	"TargetPlatforms": [
