@@ -42,6 +42,14 @@
 		{
 			"Name": "HairCardGenerator",
 			"Enabled": true
+		},
+		{
+			"Name": "RigLogic",
+			"Enabled": true
+		},
+		{
+			"Name": "ChaosCloth",
+			"Enabled": true
 		}
 	],
 	"TargetPlatforms": [
