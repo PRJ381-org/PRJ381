@@ -5,11 +5,33 @@ const {
   GOOGLE_SHEETS_SPREADSHEET_ID,
 } = require('../config/env');
 
+/**
+ * Different hosts store multi-line secrets differently (literal "\n",
+ * real newlines, or wrapped in quotes) - normalize whatever we get into
+ * a real PEM string so the OpenSSL decoder can actually parse it.
+ */
+function normalizePrivateKey(key) {
+  if (!key) return key;
+  let normalized = key.trim();
+
+  if (
+    (normalized.startsWith('"') && normalized.endsWith('"')) ||
+    (normalized.startsWith("'") && normalized.endsWith("'"))
+  ) {
+    normalized = normalized.slice(1, -1);
+  }
+
+  if (normalized.includes('\\n')) {
+    normalized = normalized.replace(/\\n/g, '\n');
+  }
+
+  return normalized;
+}
+
 let sheetsClient;
 function getClient() {
   if (!sheetsClient) {
-    // .env stores the key's line breaks as literal "\n" - convert back to real newlines.
-    const privateKey = (GOOGLE_SHEETS_PRIVATE_KEY || '').replace(/\\n/g, '\n');
+    const privateKey = normalizePrivateKey(GOOGLE_SHEETS_PRIVATE_KEY);
     const auth = new google.auth.JWT({
       email: GOOGLE_SHEETS_CLIENT_EMAIL,
       key: privateKey,
