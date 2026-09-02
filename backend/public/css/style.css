@@ -124,12 +124,6 @@ body {
   display: block;
 }
 
-.feedback-status {
-  color: var(--muted);
-  font-size: 0.88rem;
-  padding: 0.5rem 0;
-}
-
 /* Header & Branding */
 .topbar {
   padding: 1rem 2rem;

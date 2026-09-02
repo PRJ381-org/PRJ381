@@ -33,6 +33,7 @@ async function initMicrosoftSignIn() {
     },
     cache: { cacheLocation: 'sessionStorage' },
   });
+  await msalInstance.initialize();
 
   // Coming back from a Microsoft redirect? Finish the sign-in.
   try {
